@@ -14,6 +14,15 @@ class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
+  void _login() {
+    if (_formKey.currentState!.validate()) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const HomeScreen()),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,31 +44,15 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // Logo o ícono
-                  const Icon(
-                    Icons.lock_outline,
-                    size: 100,
-                    color: Colors.white,
-                  ),
+                  const Icon(Icons.lock_outline, size: 100, color: Colors.white),
                   const SizedBox(height: 40),
-                  
-                  // Título
-                  const Text(
-                    'Bienvenido',
-                    style: TextStyle(
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
+                  const Text('Bienvenido',
+                      style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.white)),
                   const SizedBox(height: 40),
-
-                  // Formulario
                   Form(
                     key: _formKey,
                     child: Column(
                       children: [
-                        // Campo de email
                         TextFormField(
                           controller: _emailController,
                           decoration: InputDecoration(
@@ -74,16 +67,9 @@ class _LoginScreenState extends State<LoginScreen> {
                             hintStyle: const TextStyle(color: Colors.white70),
                           ),
                           style: const TextStyle(color: Colors.white),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Por favor ingresa tu correo';
-                            }
-                            return null;
-                          },
+                          validator: (value) => value == null || value.isEmpty ? 'Por favor ingresa tu correo' : null,
                         ),
                         const SizedBox(height: 20),
-
-                        // Campo de contraseña
                         TextFormField(
                           controller: _passwordController,
                           obscureText: !_isPasswordVisible,
@@ -110,79 +96,43 @@ class _LoginScreenState extends State<LoginScreen> {
                             hintStyle: const TextStyle(color: Colors.white70),
                           ),
                           style: const TextStyle(color: Colors.white),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Por favor ingresa tu contraseña';
-                            }
-                            return null;
-                          },
+                          validator: (value) => value == null || value.isEmpty ? 'Por favor ingresa tu contraseña' : null,
                         ),
                         const SizedBox(height: 10),
-
-                        // Olvidé mi contraseña
                         Align(
                           alignment: Alignment.centerRight,
                           child: TextButton(
-                            onPressed: () {
-                              // Implementar lógica para recuperar contraseña
-                            },
-                            child: const Text(
-                              '¿Olvidaste tu contraseña?',
-                              style: TextStyle(color: Colors.white),
-                            ),
+                            onPressed: () {},
+                            child: const Text('¿Olvidaste tu contraseña?', style: TextStyle(color: Colors.white)),
                           ),
                         ),
                         const SizedBox(height: 30),
-
-                        // Botón de inicio de sesión
                         ElevatedButton(
-                          onPressed: () {
-                            if (_formKey.currentState!.validate()) {
-                              // Implementar lógica de inicio de sesión
-                            }
-                          },
+                          onPressed: _login,
                           style: ElevatedButton.styleFrom(
-                            foregroundColor: Colors.blue.shade700, 
+                            foregroundColor: Colors.blue.shade700,
                             backgroundColor: Colors.white,
                             padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(30),
                             ),
                           ),
-                          child: const Text(
-                            'Iniciar Sesión',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
+                          child: const Text('Iniciar Sesión', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                         ),
                         const SizedBox(height: 20),
-
-                        // Registro
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Text(
-                              '¿No tienes una cuenta?',
-                              style: TextStyle(color: Colors.white70),
-                            ),
+                            const Text('¿No tienes una cuenta?', style: TextStyle(color: Colors.white70)),
                             TextButton(
                               onPressed: () {
                                 Navigator.push(
                                   context,
-                                  MaterialPageRoute(
-                                    builder: (context) => const RegisterScreen(),
-                                  ),
+                                  MaterialPageRoute(builder: (context) => const RegisterScreen()),
                                 );
                               },
-                              child: const Text(
-                                'Regístrate',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
+                              child: const Text('Regístrate',
+                                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
                             ),
                           ],
                         ),
