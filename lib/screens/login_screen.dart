@@ -27,13 +27,13 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              Colors.blue.shade300,
-              Colors.purple.shade300,
+              Color.fromARGB(255, 83, 70, 70),
+              Color.fromARGB(255, 105, 82, 64),
             ],
           ),
         ),
@@ -44,7 +44,7 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Image.asset('assets/logo.png'),
+                  Image.asset('assets/logo.png', width: 200, height: 200),
                   const SizedBox(height: 40),
                   const Text('FeastFit',
                       style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.white)),

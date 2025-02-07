@@ -28,11 +28,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [Colors.blue.shade300, Colors.purple.shade300],
+            colors: [Color.fromARGB(255, 83, 70, 70),
+              Color.fromARGB(255, 105, 82, 64),],
           ),
         ),
         child: SafeArea(
