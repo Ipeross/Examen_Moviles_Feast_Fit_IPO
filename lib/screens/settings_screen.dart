@@ -2,6 +2,7 @@ import 'package:feast_fit/screens/screens.dart';
 import 'package:flutter/material.dart';
 
 
+
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
 
@@ -15,6 +16,7 @@ class SettingsScreen extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         children: [
           ListTile(
+            leading: const Icon(Icons.person),
             title: const Text('Perfil'),
             onTap: () {
               Navigator.push(
@@ -33,6 +35,7 @@ class SettingsScreen extends StatelessWidget {
             },
           ),
           ListTile(
+            leading: const Icon(Icons.info),
             title: const Text('Acerca de Nosotros'),
             onTap: () {
               Navigator.push(
