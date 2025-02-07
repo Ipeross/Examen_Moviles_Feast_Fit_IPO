@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
-
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+  const LoginScreen({super.key});
 
   @override
   _LoginScreenState createState() => _LoginScreenState();
@@ -11,6 +10,8 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   bool _isPasswordVisible = false;
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +21,10 @@ class _LoginScreenState extends State<LoginScreen> {
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [Colors.blue.shade200, Colors.purple.shade200],
+            colors: [
+              Colors.blue.shade300,
+              Colors.purple.shade300,
+            ],
           ),
         ),
         child: SafeArea(
@@ -30,14 +34,17 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  // Logo o ícono
                   const Icon(
                     Icons.lock_outline,
-                    size: 80,
+                    size: 100,
                     color: Colors.white,
                   ),
-                  const SizedBox(height: 30),
+                  const SizedBox(height: 40),
+                  
+                  // Título
                   const Text(
-                    'FeastFit',
+                    'Bienvenido',
                     style: TextStyle(
                       fontSize: 32,
                       fontWeight: FontWeight.bold,
@@ -45,20 +52,27 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   const SizedBox(height: 40),
+
+                  // Formulario
                   Form(
                     key: _formKey,
                     child: Column(
                       children: [
+                        // Campo de email
                         TextFormField(
+                          controller: _emailController,
                           decoration: InputDecoration(
                             hintText: 'Correo electrónico',
-                            prefixIcon: const Icon(Icons.email),
+                            prefixIcon: const Icon(Icons.email, color: Colors.white70),
                             filled: true,
-                            fillColor: Colors.white.withOpacity(0.9),
+                            fillColor: Colors.white24,
                             border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(15),
+                              borderRadius: BorderRadius.circular(30),
+                              borderSide: BorderSide.none,
                             ),
+                            hintStyle: const TextStyle(color: Colors.white70),
                           ),
+                          style: const TextStyle(color: Colors.white),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Por favor ingresa tu correo';
@@ -67,16 +81,18 @@ class _LoginScreenState extends State<LoginScreen> {
                           },
                         ),
                         const SizedBox(height: 20),
+
+                        // Campo de contraseña
                         TextFormField(
+                          controller: _passwordController,
                           obscureText: !_isPasswordVisible,
                           decoration: InputDecoration(
                             hintText: 'Contraseña',
-                            prefixIcon: const Icon(Icons.lock),
+                            prefixIcon: const Icon(Icons.lock, color: Colors.white70),
                             suffixIcon: IconButton(
                               icon: Icon(
-                                _isPasswordVisible 
-                                  ? Icons.visibility_off 
-                                  : Icons.visibility,
+                                _isPasswordVisible ? Icons.visibility_off : Icons.visibility,
+                                color: Colors.white70,
                               ),
                               onPressed: () {
                                 setState(() {
@@ -85,11 +101,14 @@ class _LoginScreenState extends State<LoginScreen> {
                               },
                             ),
                             filled: true,
-                            fillColor: Colors.white.withOpacity(0.9),
+                            fillColor: Colors.white24,
                             border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(15),
+                              borderRadius: BorderRadius.circular(30),
+                              borderSide: BorderSide.none,
                             ),
+                            hintStyle: const TextStyle(color: Colors.white70),
                           ),
+                          style: const TextStyle(color: Colors.white),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Por favor ingresa tu contraseña';
@@ -97,11 +116,15 @@ class _LoginScreenState extends State<LoginScreen> {
                             return null;
                           },
                         ),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
+
+                        // Olvidé mi contraseña
                         Align(
                           alignment: Alignment.centerRight,
                           child: TextButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              // Implementar lógica para recuperar contraseña
+                            },
                             child: const Text(
                               '¿Olvidaste tu contraseña?',
                               style: TextStyle(color: Colors.white),
@@ -109,19 +132,18 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                         const SizedBox(height: 30),
+
+                        // Botón de inicio de sesión
                         ElevatedButton(
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
-                              // Procesar el formulario
+                              // Implementar lógica de inicio de sesión
                             }
                           },
                           style: ElevatedButton.styleFrom(
                             foregroundColor: Colors.blue.shade700, 
                             backgroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 50, 
-                              vertical: 15
-                            ),
+                            padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(30),
                             ),
@@ -134,6 +156,30 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
                         ),
+                        const SizedBox(height: 20),
+
+                        // Registro
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text(
+                              '¿No tienes una cuenta?',
+                              style: TextStyle(color: Colors.white70),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                // Implementar navegación a registro
+                              },
+                              child: const Text(
+                                'Regístrate',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ],
                     ),
                   ),
@@ -144,5 +190,12 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
   }
 }
