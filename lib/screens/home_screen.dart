@@ -1,7 +1,7 @@
 import 'package:feast_fit/theme/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
+import 'settings_screen.dart'; // Asegúrate de importar SettingsScreen
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -14,10 +14,34 @@ class HomeScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Tema Claro/Oscuro'),
         actions: [
-          IconButton(
-            icon: Icon(themeProvider.themeMode == ThemeMode.dark ? Icons.light_mode : Icons.dark_mode),
-            onPressed: () {
-              themeProvider.toggleTheme();
+          PopupMenuButton<String>(
+            onSelected: (value) {
+              if (value == 'settings') {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SettingsScreen()),
+                );
+              } else if (value == 'toggle_theme') {
+                themeProvider.toggleTheme();
+              }
+            },
+            itemBuilder: (BuildContext context) {
+              return [
+                PopupMenuItem<String>(
+                  value: 'toggle_theme',
+                  child: ListTile(
+                    leading: Icon(themeProvider.themeMode == ThemeMode.dark ? Icons.light_mode : Icons.dark_mode),
+                    title: Text(themeProvider.themeMode == ThemeMode.dark ? 'Modo Claro' : 'Modo Oscuro'),
+                  ),
+                ),
+                const PopupMenuItem<String>(
+                  value: 'settings',
+                  child: ListTile(
+                    leading: Icon(Icons.settings),
+                    title: Text('Ajustes'),
+                  ),
+                ),
+              ];
             },
           ),
         ],

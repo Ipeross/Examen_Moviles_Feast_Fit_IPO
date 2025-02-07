@@ -27,7 +27,7 @@ class SettingsScreen extends StatelessWidget {
         padding: EdgeInsets.all(16.0),
         children: [
           ListTile(
-            leading: const Icon(Icons.person, color: Colors.blueAccent),
+            leading: const Icon(Icons.person, color: Color.fromARGB(255, 90, 72, 58)),
             title: const Text('Perfil'),
             onTap: () {
               Navigator.push(
@@ -47,7 +47,7 @@ class SettingsScreen extends StatelessWidget {
           ),
           const Divider(),
           ListTile(
-            leading: const Icon(Icons.info, color: Colors.blueAccent),
+            leading: const Icon(Icons.info, color: Color.fromARGB(255, 90, 72, 58)),
             title: const Text('Acerca de Nosotros'),
             onTap: () {
               Navigator.push(
