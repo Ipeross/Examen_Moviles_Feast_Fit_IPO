@@ -1,3 +1,4 @@
+import 'package:feast_fit/screens/screens.dart';
 import 'package:flutter/material.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -168,7 +169,12 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             TextButton(
                               onPressed: () {
-                                // Implementar navegación a registro
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const RegisterScreen(),
+                                  ),
+                                );
                               },
                               child: const Text(
                                 'Regístrate',
