@@ -19,7 +19,7 @@ class HomeScreen extends StatelessWidget {
               if (value == 'settings') {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => SettingsScreen()),
+                  MaterialPageRoute(builder: (context) => const SettingsScreen()),
                 );
               } else if (value == 'toggle_theme') {
                 themeProvider.toggleTheme();
