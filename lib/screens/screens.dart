@@ -1,3 +1,9 @@
 export 'package:feast_fit/screens/home_screen.dart';
 export 'package:feast_fit/screens/login_screen.dart';
 export 'package:feast_fit/screens/register_screen.dart';
+export 'package:feast_fit/screens/settings_screen.dart';
+export 'package:feast_fit/screens/food_screen.dart';
+export 'package:feast_fit/screens/chart_screen.dart';
+export 'package:feast_fit/screens/about_us_screen.dart';
+export 'package:feast_fit/screens/contact_screen.dart';
+export 'package:feast_fit/screens/profile_screen.dart';
