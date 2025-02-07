@@ -46,7 +46,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 children: [
                   const Icon(Icons.lock_outline, size: 100, color: Colors.white),
                   const SizedBox(height: 40),
-                  const Text('Bienvenido',
+                  const Text('FeastFit',
                       style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.white)),
                   const SizedBox(height: 40),
                   Form(
