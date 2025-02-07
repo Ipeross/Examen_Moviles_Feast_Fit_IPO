@@ -1,3 +1,4 @@
+import 'package:feast_fit/screens/screens.dart';
 import 'package:flutter/material.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -13,6 +14,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+
+  void _register() {
+    if (_formKey.currentState!.validate()) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const HomeScreen()),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,20 +42,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(
-                    Icons.person_add_outlined,
-                    size: 80,
-                    color: Colors.white,
-                  ),
+                  const Icon(Icons.person_add_outlined, size: 80, color: Colors.white),
                   const SizedBox(height: 30),
-                  const Text(
-                    'Crear Cuenta',
-                    style: TextStyle(
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
+                  const Text('Crear Cuenta',
+                      style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.white)),
                   const SizedBox(height: 40),
                   Form(
                     key: _formKey,
@@ -65,12 +65,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             hintStyle: const TextStyle(color: Colors.white70),
                           ),
                           style: const TextStyle(color: Colors.white),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Por favor ingresa tu nombre';
-                            }
-                            return null;
-                          },
+                          validator: (value) => value == null || value.isEmpty ? 'Por favor ingresa tu nombre' : null,
                         ),
                         const SizedBox(height: 20),
                         TextFormField(
@@ -88,12 +83,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           ),
                           style: const TextStyle(color: Colors.white),
                           validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Por favor ingresa tu correo';
-                            }
-                            if (!value.contains('@')) {
-                              return 'Ingresa un correo válido';
-                            }
+                            if (value == null || value.isEmpty) return 'Por favor ingresa tu correo';
+                            if (!value.contains('@')) return 'Ingresa un correo válido';
                             return null;
                           },
                         ),
@@ -125,60 +116,33 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           ),
                           style: const TextStyle(color: Colors.white),
                           validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Por favor ingresa una contraseña';
-                            }
-                            if (value.length < 6) {
-                              return 'La contraseña debe tener al menos 6 caracteres';
-                            }
+                            if (value == null || value.isEmpty) return 'Por favor ingresa una contraseña';
+                            if (value.length < 6) return 'La contraseña debe tener al menos 6 caracteres';
                             return null;
                           },
                         ),
                         const SizedBox(height: 40),
                         ElevatedButton(
-                          onPressed: () {
-                            if (_formKey.currentState!.validate()) {
-                              // Implementar registro
-                              print('Nombre: ${_nameController.text}');
-                              print('Email: ${_emailController.text}');
-                              print('Password: ${_passwordController.text}');
-                            }
-                          },
+                          onPressed: _register,
                           style: ElevatedButton.styleFrom(
-                            foregroundColor: Colors.blue.shade700, 
+                            foregroundColor: Colors.blue.shade700,
                             backgroundColor: Colors.white,
                             padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(30),
                             ),
                           ),
-                          child: const Text(
-                            'Registrarse',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
+                          child: const Text('Registrarse', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                         ),
                         const SizedBox(height: 20),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Text(
-                              '¿Ya tienes una cuenta?',
-                              style: TextStyle(color: Colors.white70),
-                            ),
+                            const Text('¿Ya tienes una cuenta?', style: TextStyle(color: Colors.white70)),
                             TextButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              child: const Text(
-                                'Inicia Sesión',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
+                              onPressed: () => Navigator.pop(context),
+                              child: const Text('Inicia Sesión',
+                                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
                             ),
                           ],
                         ),
