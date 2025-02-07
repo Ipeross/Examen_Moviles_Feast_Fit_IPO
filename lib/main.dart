@@ -1,4 +1,5 @@
 import 'package:feast_fit/screens/login_screen.dart';
+import 'package:feast_fit/screens/settings_screen.dart';
 import 'package:feast_fit/theme/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -27,7 +28,7 @@ class MyApp extends StatelessWidget {
       themeMode: themeProvider.themeMode,
       theme: ThemeData.light(),
       darkTheme: ThemeData.dark(),
-      home: const LoginScreen(),
+      home: const SettingsScreen(),
     );
   }
 }
