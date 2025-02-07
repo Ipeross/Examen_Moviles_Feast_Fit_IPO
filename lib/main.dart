@@ -24,11 +24,10 @@ class MyApp extends StatelessWidget {
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Theme Switch',
       themeMode: themeProvider.themeMode,
       theme: ThemeData.light(),
       darkTheme: ThemeData.dark(),
-      home: const SettingsScreen(),
+      home: const LoginScreen(),
     );
   }
 }
