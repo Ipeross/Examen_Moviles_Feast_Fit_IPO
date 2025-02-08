@@ -198,6 +198,25 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     );
   }
 
+  Widget _buildTextField(TextEditingController controller, String hintText, IconData icon) {
+    return TextFormField(
+      controller: controller,
+      decoration: InputDecoration(
+        hintText: hintText,
+        prefixIcon: Icon(icon, color: Colors.white70),
+        filled: true,
+        fillColor: Colors.white24,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(30),
+          borderSide: BorderSide.none,
+        ),
+        hintStyle: const TextStyle(color: Colors.white70),
+      ),
+      style: const TextStyle(color: Colors.white),
+      keyboardType: TextInputType.emailAddress,
+    );
+  }
+
   @override
   void dispose() {
     _emailController.dispose();
