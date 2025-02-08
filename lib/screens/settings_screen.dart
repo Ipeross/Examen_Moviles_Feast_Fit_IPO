@@ -1,22 +1,28 @@
+import 'package:feast_fit/screens/screens.dart';
 import 'package:feast_fit/theme/theme_provider.dart';
+import 'package:feast_fit/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'profile_screen.dart';
-import 'about_us_screen.dart';
+
+
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-        final themeProvider = Provider.of<ThemeProvider>(context);
+    final themeProvider = Provider.of<ThemeProvider>(context);
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Configuración'),
         actions: [
           IconButton(
-            icon: Icon(themeProvider.themeMode == ThemeMode.dark ? Icons.light_mode : Icons.dark_mode),
+            icon: Icon(
+              themeProvider.themeMode == ThemeMode.dark 
+                ? Icons.light_mode 
+                : Icons.dark_mode
+            ),
             onPressed: () {
               themeProvider.toggleTheme();
             },
@@ -24,11 +30,11 @@ class SettingsScreen extends StatelessWidget {
         ],
       ),
       body: ListView(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         children: [
-          ListTile(
-            leading: const Icon(Icons.person, color: Color.fromARGB(255, 90, 72, 58)),
-            title: const Text('Perfil'),
+          SettingsList(
+            icon: Icons.person,
+            title: 'Perfil',
             onTap: () {
               Navigator.push(
                 context,
@@ -45,10 +51,9 @@ class SettingsScreen extends StatelessWidget {
               );
             },
           ),
-          const Divider(),
-          ListTile(
-            leading: const Icon(Icons.info, color: Color.fromARGB(255, 90, 72, 58)),
-            title: const Text('Acerca de Nosotros'),
+          SettingsList(
+            icon: Icons.info,
+            title: 'Acerca de Nosotros',
             onTap: () {
               Navigator.push(
                 context,
