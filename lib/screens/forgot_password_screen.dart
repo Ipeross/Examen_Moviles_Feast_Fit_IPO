@@ -9,7 +9,9 @@ class ForgotPasswordScreen extends StatefulWidget {
 
 class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _codeController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  bool _isCodeSent = false;
 
   @override
   Widget build(BuildContext context) {
@@ -41,13 +43,31 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 },
               ),
               const SizedBox(height: 20),
+              if (_isCodeSent)
+                TextFormField(
+                  controller: _codeController,
+                  decoration: const InputDecoration(
+                    labelText: 'Código de Verificación',
+                    border: OutlineInputBorder(),
+                  ),
+                  keyboardType: TextInputType.number,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor ingresa el código de verificación';
+                    }
+                    return null;
+                  },
+                ),
+              const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
-                    // Lógica para enviar el código
+                    setState(() {
+                      _isCodeSent = true;
+                    });
                   }
                 },
-                child: const Text('Enviar Código'),
+                child: Text(_isCodeSent ? 'Verificar Código' : 'Enviar Código'),
               ),
             ],
           ),
@@ -59,6 +79,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   @override
   void dispose() {
     _emailController.dispose();
+    _codeController.dispose();
     super.dispose();
   }
 }
