@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+ import 'package:flutter/material.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
@@ -8,21 +8,14 @@ class ForgotPasswordScreen extends StatefulWidget {
 }
 
 class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _codeController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  bool _isCodeSent = false;
-  bool _isPasswordReset = false;
+  final _emailController = TextEditingController();
+  final _codeController = TextEditingController();
+  final _newPasswordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
   bool _isPasswordVisible = false;
   bool _isConfirmPasswordVisible = false;
-
-  void _showSnackBar(String message, Color color) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message), backgroundColor: color),
-    );
-  }
+  int _currentStep = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -30,121 +23,167 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       appBar: AppBar(
         title: const Text('Recuperar Contraseña'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              if (!_isCodeSent && !_isPasswordReset)
-                TextFormField(
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Color.fromARGB(255, 83, 70, 70),
+              Color.fromARGB(255, 105, 82, 64),
+            ],
+          ),
+        ),
+        child: Stepper(
+          currentStep: _currentStep,
+          onStepContinue: () {
+            if (_currentStep < 2) {
+              setState(() {
+                _currentStep++;
+              });
+            } else {
+              // Aquí iría la lógica para finalizar el proceso
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('¡Contraseña actualizada exitosamente!'),
+                  backgroundColor: Colors.green,
+                ),
+              );
+              Navigator.pop(context);
+            }
+          },
+          onStepCancel: () {
+            if (_currentStep > 0) {
+              setState(() {
+                _currentStep--;
+              });
+            }
+          },
+          steps: [
+            Step(
+              title: const Text('Verificar Email', style: TextStyle(color: Colors.white)),
+              content: Form(
+                key: _formKey,
+                child: TextFormField(
                   controller: _emailController,
-                  decoration: const InputDecoration(
-                    labelText: 'Correo Electrónico',
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    hintText: 'Ingresa tu correo electrónico',
+                    prefixIcon: const Icon(Icons.email, color: Colors.white70),
+                    filled: true,
+                    fillColor: Colors.white24,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                      borderSide: BorderSide.none,
+                    ),
+                    hintStyle: const TextStyle(color: Colors.white70),
                   ),
-                  keyboardType: TextInputType.emailAddress,
+                  style: const TextStyle(color: Colors.white),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Por favor ingresa tu correo electrónico';
+                      return 'Por favor ingresa tu correo';
                     }
-                    if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                    if (!value.contains('@')) {
                       return 'Ingresa un correo válido';
                     }
                     return null;
                   },
                 ),
-              if (_isCodeSent && !_isPasswordReset)
-                TextFormField(
-                  controller: _codeController,
-                  decoration: const InputDecoration(
-                    labelText: 'Código de Verificación',
-                    border: OutlineInputBorder(),
-                  ),
-                  keyboardType: TextInputType.number,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Por favor ingresa el código de verificación';
-                    }
-                    return null;
-                  },
-                ),
-              if (_isPasswordReset)
-                Column(
-                  children: [
-                    TextFormField(
-                      controller: _passwordController,
-                      decoration: InputDecoration(
-                        labelText: 'Nueva Contraseña',
-                        border: OutlineInputBorder(),
-                        suffixIcon: IconButton(
-                          icon: Icon(_isPasswordVisible ? Icons.visibility_off : Icons.visibility),
-                          onPressed: () {
-                            setState(() {
-                              _isPasswordVisible = !_isPasswordVisible;
-                            });
-                          },
-                        ),
-                      ),
-                      obscureText: !_isPasswordVisible,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Por favor ingresa tu nueva contraseña';
-                        }
-                        return null;
-                      },
-                    ),
-                    const SizedBox(height: 20),
-                    TextFormField(
-                      controller: _confirmPasswordController,
-                      decoration: InputDecoration(
-                        labelText: 'Confirmar Contraseña',
-                        border: OutlineInputBorder(),
-                        suffixIcon: IconButton(
-                          icon: Icon(_isConfirmPasswordVisible ? Icons.visibility_off : Icons.visibility),
-                          onPressed: () {
-                            setState(() {
-                              _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
-                            });
-                          },
-                        ),
-                      ),
-                      obscureText: !_isConfirmPasswordVisible,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Por favor confirma tu contraseña';
-                        }
-                        if (value != _passwordController.text) {
-                          return 'Las contraseñas no coinciden';
-                        }
-                        return null;
-                      },
-                    ),
-                  ],
-                ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    setState(() {
-                      if (!_isCodeSent) {
-                        _isCodeSent = true;
-                        _showSnackBar('Código enviado a tu correo', Colors.blue);
-                      } else if (!_isPasswordReset) {
-                        _isPasswordReset = true;
-                        _showSnackBar('Código verificado correctamente', Colors.green);
-                      } else {
-                        _showSnackBar('Contraseña restablecida con éxito', Colors.green);
-                      }
-                    });
-                  }
-                },
-                child: Text(
-                  !_isCodeSent ? 'Enviar Código' : (!_isPasswordReset ? 'Verificar Código' : 'Restablecer Contraseña'),
-                ),
               ),
-            ],
-          ),
+              isActive: _currentStep >= 0,
+            ),
+            Step(
+              title: const Text('Código de Verificación', style: TextStyle(color: Colors.white)),
+              content: Column(
+                children: [
+                  const Text(
+                    'Te hemos enviado un código de verificación a tu correo electrónico',
+                    style: TextStyle(color: Colors.white70),
+                  ),
+                  const SizedBox(height: 20),
+                  TextFormField(
+                    controller: _codeController,
+                    decoration: InputDecoration(
+                      hintText: 'Ingresa el código',
+                      prefixIcon: const Icon(Icons.lock_clock, color: Colors.white70),
+                      filled: true,
+                      fillColor: Colors.white24,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30),
+                        borderSide: BorderSide.none,
+                      ),
+                      hintStyle: const TextStyle(color: Colors.white70),
+                    ),
+                    style: const TextStyle(color: Colors.white),
+                    keyboardType: TextInputType.number,
+                  ),
+                ],
+              ),
+              isActive: _currentStep >= 1,
+            ),
+            Step(
+              title: const Text('Nueva Contraseña', style: TextStyle(color: Colors.white)),
+              content: Column(
+                children: [
+                  TextFormField(
+                    controller: _newPasswordController,
+                    obscureText: !_isPasswordVisible,
+                    decoration: InputDecoration(
+                      hintText: 'Nueva contraseña',
+                      prefixIcon: const Icon(Icons.lock, color: Colors.white70),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _isPasswordVisible ? Icons.visibility_off : Icons.visibility,
+                          color: Colors.white70,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _isPasswordVisible = !_isPasswordVisible;
+                          });
+                        },
+                      ),
+                      filled: true,
+                      fillColor: Colors.white24,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30),
+                        borderSide: BorderSide.none,
+                      ),
+                      hintStyle: const TextStyle(color: Colors.white70),
+                    ),
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                  const SizedBox(height: 20),
+                  TextFormField(
+                    controller: _confirmPasswordController,
+                    obscureText: !_isConfirmPasswordVisible,
+                    decoration: InputDecoration(
+                      hintText: 'Confirmar contraseña',
+                      prefixIcon: const Icon(Icons.lock_outline, color: Colors.white70),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _isConfirmPasswordVisible ? Icons.visibility_off : Icons.visibility,
+                          color: Colors.white70,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
+                          });
+                        },
+                      ),
+                      filled: true,
+                      fillColor: Colors.white24,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30),
+                        borderSide: BorderSide.none,
+                      ),
+                      hintStyle: const TextStyle(color: Colors.white70),
+                    ),
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                ],
+              ),
+              isActive: _currentStep >= 2,
+            ),
+          ],
         ),
       ),
     );
@@ -154,7 +193,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   void dispose() {
     _emailController.dispose();
     _codeController.dispose();
-    _passwordController.dispose();
+    _newPasswordController.dispose();
     _confirmPasswordController.dispose();
     super.dispose();
   }
