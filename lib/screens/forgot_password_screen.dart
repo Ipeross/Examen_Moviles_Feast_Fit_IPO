@@ -15,6 +15,14 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   final _formKey = GlobalKey<FormState>();
   bool _isCodeSent = false;
   bool _isPasswordReset = false;
+  bool _isPasswordVisible = false;
+  bool _isConfirmPasswordVisible = false;
+
+  void _showSnackBar(String message, Color color) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message), backgroundColor: color),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,11 +74,19 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   children: [
                     TextFormField(
                       controller: _passwordController,
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         labelText: 'Nueva Contraseña',
                         border: OutlineInputBorder(),
+                        suffixIcon: IconButton(
+                          icon: Icon(_isPasswordVisible ? Icons.visibility_off : Icons.visibility),
+                          onPressed: () {
+                            setState(() {
+                              _isPasswordVisible = !_isPasswordVisible;
+                            });
+                          },
+                        ),
                       ),
-                      obscureText: true,
+                      obscureText: !_isPasswordVisible,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Por favor ingresa tu nueva contraseña';
@@ -81,11 +97,19 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     const SizedBox(height: 20),
                     TextFormField(
                       controller: _confirmPasswordController,
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         labelText: 'Confirmar Contraseña',
                         border: OutlineInputBorder(),
+                        suffixIcon: IconButton(
+                          icon: Icon(_isConfirmPasswordVisible ? Icons.visibility_off : Icons.visibility),
+                          onPressed: () {
+                            setState(() {
+                              _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
+                            });
+                          },
+                        ),
                       ),
-                      obscureText: true,
+                      obscureText: !_isConfirmPasswordVisible,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Por favor confirma tu contraseña';
@@ -105,10 +129,12 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     setState(() {
                       if (!_isCodeSent) {
                         _isCodeSent = true;
+                        _showSnackBar('Código enviado a tu correo', Colors.blue);
                       } else if (!_isPasswordReset) {
                         _isPasswordReset = true;
+                        _showSnackBar('Código verificado correctamente', Colors.green);
                       } else {
-                        // Lógica para finalizar el proceso de recuperación
+                        _showSnackBar('Contraseña restablecida con éxito', Colors.green);
                       }
                     });
                   }
