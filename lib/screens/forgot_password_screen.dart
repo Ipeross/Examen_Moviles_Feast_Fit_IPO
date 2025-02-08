@@ -8,7 +8,6 @@ class ForgotPasswordScreen extends StatefulWidget {
 }
 
 class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
-  final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _codeController = TextEditingController();
   final _newPasswordController = TextEditingController();
@@ -38,80 +37,92 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             children: [
               AppBar(
                 title: const Text('Recuperar Contraseña'),
+                foregroundColor: Colors.white,
                 backgroundColor: Colors.transparent,
                 elevation: 0,
+                centerTitle: true,
               ),
               Expanded(
-                child: Stepper(
-                  type: StepperType.vertical,
-                  physics: const ClampingScrollPhysics(),
-                  currentStep: _currentStep,
-                  onStepContinue: () {
-                    if (_currentStep < 2) {
-                      setState(() {
-                        _currentStep++;
-                      });
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('¡Contraseña actualizada exitosamente!'),
-                          backgroundColor: Colors.green,
+                child: SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                    child: Stepper(
+                      type: StepperType.vertical,
+                      physics: const ClampingScrollPhysics(),
+                      currentStep: _currentStep,
+                      onStepContinue: () {
+                        if (_currentStep < 2) {
+                          setState(() {
+                            _currentStep++;
+                          });
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('¡Contraseña actualizada exitosamente!'),
+                              backgroundColor: Colors.green,
+                            ),
+                          );
+                          Navigator.pop(context);
+                        }
+                      },
+                      onStepCancel: () {
+                        if (_currentStep > 0) {
+                          setState(() {
+                            _currentStep--;
+                          });
+                        }
+                      },
+                      steps: [
+                        Step(
+                          title: const Text('Verificar Email', style: TextStyle(color: Colors.white)),
+                          content: _buildTextField(_emailController, 'Ingresa tu correo electrónico', Icons.email),
+                          isActive: _currentStep >= 0,
                         ),
-                      );
-                      Navigator.pop(context);
-                    }
-                  },
-                  onStepCancel: () {
-                    if (_currentStep > 0) {
-                      setState(() {
-                        _currentStep--;
-                      });
-                    }
-                  },
-                  steps: [
-                    Step(
-                      title: const Text('Verificar Email', style: TextStyle(color: Colors.white)),
-                      content: _buildTextField(_emailController, 'Ingresa tu correo electrónico', Icons.email),
-                      isActive: _currentStep >= 0,
-                    ),
-                    Step(
-                      title: const Text('Código de Verificación', style: TextStyle(color: Colors.white)),
-                      content: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            'Te hemos enviado un código de verificación a tu correo electrónico',
-                            style: TextStyle(color: Colors.white70),
+                        Step(
+                          title: const Text('Código de Verificación', style: TextStyle(color: Colors.white)),
+                          content: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'Te hemos enviado un código de verificación a tu correo electrónico',
+                                style: TextStyle(color: Colors.white70),
+                              ),
+                              const SizedBox(height: 15),
+                              _buildTextField(_codeController, 'Ingresa el código', Icons.lock_clock),
+                            ],
                           ),
-                          const SizedBox(height: 15),
-                          _buildTextField(_codeController, 'Ingresa el código', Icons.lock_clock),
-                        ],
-                      ),
-                      isActive: _currentStep >= 1,
+                          isActive: _currentStep >= 1,
+                        ),
+                        Step(
+                          title: const Text('Nueva Contraseña', style: TextStyle(color: Colors.white)),
+                          content: Column(
+                            children: [
+                              _buildPasswordField(_newPasswordController, 'Nueva contraseña', _isPasswordVisible, (visible) {
+                                setState(() {
+                                  _isPasswordVisible = visible;
+                                });
+                              }),
+                              const SizedBox(height: 15),
+                              _buildPasswordField(_confirmPasswordController, 'Confirmar contraseña', _isConfirmPasswordVisible, (visible) {
+                                setState(() {
+                                  _isConfirmPasswordVisible = visible;
+                                });
+                              }),
+                            ],
+                          ),
+                          isActive: _currentStep >= 2,
+                        ),
+                      ],
                     ),
-                    Step(
-                      title: const Text('Nueva Contraseña', style: TextStyle(color: Colors.white)),
-                      content: Column(
-                        children: [
-                          _buildPasswordField(_newPasswordController, 'Nueva contraseña', _isPasswordVisible, (visible) {
-                            setState(() {
-                              _isPasswordVisible = visible;
-                            });
-                          }),
-                          const SizedBox(height: 15),
-                          _buildPasswordField(_confirmPasswordController, 'Confirmar contraseña', _isConfirmPasswordVisible, (visible) {
-                            setState(() {
-                              _isConfirmPasswordVisible = visible;
-                            });
-                          }),
-                        ],
-                      ),
-                      isActive: _currentStep >= 2,
-                    ),
-                  ],
+                    
+                  ),
+                  
                 ),
               ),
-            ],
+              Image.asset('assets/logo.png', width: 350, height: 350),
+              const SizedBox(height: 150),
+            ], 
           ),
         ),
       ),
