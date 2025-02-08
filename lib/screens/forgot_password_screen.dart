@@ -217,6 +217,29 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     );
   }
 
+   Widget _buildPasswordField(TextEditingController controller, String hintText, bool isVisible, Function(bool) toggleVisibility) {
+    return TextFormField(
+      controller: controller,
+      obscureText: !isVisible,
+      decoration: InputDecoration(
+        hintText: hintText,
+        prefixIcon: const Icon(Icons.lock, color: Colors.white70),
+        suffixIcon: IconButton(
+          icon: Icon(isVisible ? Icons.visibility_off : Icons.visibility, color: Colors.white70),
+          onPressed: () => toggleVisibility(!isVisible),
+        ),
+        filled: true,
+        fillColor: Colors.white24,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(30),
+          borderSide: BorderSide.none,
+        ),
+        hintStyle: const TextStyle(color: Colors.white70),
+      ),
+      style: const TextStyle(color: Colors.white),
+    );
+  }
+
   @override
   void dispose() {
     _emailController.dispose();
