@@ -20,9 +20,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Recuperar Contraseña'),
-      ),
       body: Container(
         width: double.infinity,
         height: double.infinity,
@@ -39,8 +36,15 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         child: SafeArea(
           child: Column(
             children: [
+              AppBar(
+                title: const Text('Recuperar Contraseña'),
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+              ),
               Expanded(
                 child: Stepper(
+                  type: StepperType.vertical,
+                  physics: const ClampingScrollPhysics(),
                   currentStep: _currentStep,
                   onStepContinue: () {
                     if (_currentStep < 2) {
@@ -67,60 +71,20 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   steps: [
                     Step(
                       title: const Text('Verificar Email', style: TextStyle(color: Colors.white)),
-                      content: Form(
-                        key: _formKey,
-                        child: TextFormField(
-                          controller: _emailController,
-                          decoration: InputDecoration(
-                            hintText: 'Ingresa tu correo electrónico',
-                            prefixIcon: const Icon(Icons.email, color: Colors.white70),
-                            filled: true,
-                            fillColor: Colors.white24,
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(30),
-                              borderSide: BorderSide.none,
-                            ),
-                            hintStyle: const TextStyle(color: Colors.white70),
-                          ),
-                          style: const TextStyle(color: Colors.white),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Por favor ingresa tu correo';
-                            }
-                            if (!value.contains('@')) {
-                              return 'Ingresa un correo válido';
-                            }
-                            return null;
-                          },
-                        ),
-                      ),
+                      content: _buildTextField(_emailController, 'Ingresa tu correo electrónico', Icons.email),
                       isActive: _currentStep >= 0,
                     ),
                     Step(
                       title: const Text('Código de Verificación', style: TextStyle(color: Colors.white)),
                       content: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const Text(
                             'Te hemos enviado un código de verificación a tu correo electrónico',
                             style: TextStyle(color: Colors.white70),
                           ),
-                          const SizedBox(height: 20),
-                          TextFormField(
-                            controller: _codeController,
-                            decoration: InputDecoration(
-                              hintText: 'Ingresa el código',
-                              prefixIcon: const Icon(Icons.lock_clock, color: Colors.white70),
-                              filled: true,
-                              fillColor: Colors.white24,
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(30),
-                                borderSide: BorderSide.none,
-                              ),
-                              hintStyle: const TextStyle(color: Colors.white70),
-                            ),
-                            style: const TextStyle(color: Colors.white),
-                            keyboardType: TextInputType.number,
-                          ),
+                          const SizedBox(height: 15),
+                          _buildTextField(_codeController, 'Ingresa el código', Icons.lock_clock),
                         ],
                       ),
                       isActive: _currentStep >= 1,
@@ -129,61 +93,17 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       title: const Text('Nueva Contraseña', style: TextStyle(color: Colors.white)),
                       content: Column(
                         children: [
-                          TextFormField(
-                            controller: _newPasswordController,
-                            obscureText: !_isPasswordVisible,
-                            decoration: InputDecoration(
-                              hintText: 'Nueva contraseña',
-                              prefixIcon: const Icon(Icons.lock, color: Colors.white70),
-                              suffixIcon: IconButton(
-                                icon: Icon(
-                                  _isPasswordVisible ? Icons.visibility_off : Icons.visibility,
-                                  color: Colors.white70,
-                                ),
-                                onPressed: () {
-                                  setState(() {
-                                    _isPasswordVisible = !_isPasswordVisible;
-                                  });
-                                },
-                              ),
-                              filled: true,
-                              fillColor: Colors.white24,
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(30),
-                                borderSide: BorderSide.none,
-                              ),
-                              hintStyle: const TextStyle(color: Colors.white70),
-                            ),
-                            style: const TextStyle(color: Colors.white),
-                          ),
-                          const SizedBox(height: 20),
-                          TextFormField(
-                            controller: _confirmPasswordController,
-                            obscureText: !_isConfirmPasswordVisible,
-                            decoration: InputDecoration(
-                              hintText: 'Confirmar contraseña',
-                              prefixIcon: const Icon(Icons.lock_outline, color: Colors.white70),
-                              suffixIcon: IconButton(
-                                icon: Icon(
-                                  _isConfirmPasswordVisible ? Icons.visibility_off : Icons.visibility,
-                                  color: Colors.white70,
-                                ),
-                                onPressed: () {
-                                  setState(() {
-                                    _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
-                                  });
-                                },
-                              ),
-                              filled: true,
-                              fillColor: Colors.white24,
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(30),
-                                borderSide: BorderSide.none,
-                              ),
-                              hintStyle: const TextStyle(color: Colors.white70),
-                            ),
-                            style: const TextStyle(color: Colors.white),
-                          ),
+                          _buildPasswordField(_newPasswordController, 'Nueva contraseña', _isPasswordVisible, (visible) {
+                            setState(() {
+                              _isPasswordVisible = visible;
+                            });
+                          }),
+                          const SizedBox(height: 15),
+                          _buildPasswordField(_confirmPasswordController, 'Confirmar contraseña', _isConfirmPasswordVisible, (visible) {
+                            setState(() {
+                              _isConfirmPasswordVisible = visible;
+                            });
+                          }),
                         ],
                       ),
                       isActive: _currentStep >= 2,
@@ -217,7 +137,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     );
   }
 
-   Widget _buildPasswordField(TextEditingController controller, String hintText, bool isVisible, Function(bool) toggleVisibility) {
+  Widget _buildPasswordField(TextEditingController controller, String hintText, bool isVisible, Function(bool) toggleVisibility) {
     return TextFormField(
       controller: controller,
       obscureText: !isVisible,
