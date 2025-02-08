@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:feast_fit/screens/forgot_password_screen.dart';
 import 'package:feast_fit/screens/screens.dart';
 import 'package:flutter/material.dart';
 
@@ -130,7 +131,10 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                             Align(
                               alignment: Alignment.centerRight,
                               child: TextButton(
-                                onPressed: () {},
+                                onPressed: () { Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) => const ForgotPasswordScreen()),
+                                    );},
                                 child: const Text(
                                   '¿Olvidaste tu contraseña?',
                                   style: TextStyle(color: Colors.white)
