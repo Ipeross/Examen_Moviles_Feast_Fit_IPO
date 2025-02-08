@@ -1,6 +1,4 @@
-  import 'package:feast_fit/screens/about_us_screen.dart';
   import 'package:feast_fit/screens/login_screen.dart';
-  import 'package:feast_fit/screens/settings_screen.dart';
   import 'package:feast_fit/theme/theme_provider.dart';
   import 'package:flutter/material.dart';
   import 'package:provider/provider.dart';

@@ -1,8 +1,8 @@
 import 'package:feast_fit/theme/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'profile_screen.dart'; // Asegúrate de que la ruta sea correcta
-import 'about_us_screen.dart'; // Asegúrate de que la ruta sea correcta
+import 'profile_screen.dart';
+import 'about_us_screen.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
