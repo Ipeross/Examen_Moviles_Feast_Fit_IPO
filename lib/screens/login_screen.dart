@@ -21,7 +21,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
   void initState() {
     super.initState();
     _animationController = AnimationController(
-      duration: const Duration(seconds: 5),
+      duration: const Duration(seconds: 7),
       vsync: this,
     )..repeat();
   }

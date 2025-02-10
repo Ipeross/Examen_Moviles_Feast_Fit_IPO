@@ -12,7 +12,7 @@ class HomeScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Tema Claro/Oscuro'),
+        title: const Text('Home'),
         actions: [
           PopupMenuButton<String>(
             onSelected: (value) {
