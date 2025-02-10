@@ -10,7 +10,8 @@ class LoginScreen extends StatefulWidget {
   _LoginScreenState createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStateMixin {
+class _LoginScreenState extends State<LoginScreen>
+    with SingleTickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
   bool _isPasswordVisible = false;
   final _emailController = TextEditingController();
@@ -21,9 +22,9 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
   void initState() {
     super.initState();
     _animationController = AnimationController(
-      duration: const Duration(seconds: 7),
       vsync: this,
-    )..repeat();
+      duration: const Duration(seconds: 8),
+    )..repeat(reverse: true);
   }
 
   void _login() {
@@ -43,23 +44,22 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
         builder: (context, child) {
           return Container(
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment(
-                  cos(_animationController.value * 2 * 3.14),
-                  sin(_animationController.value * 2 * 3.14),
-                ),
-                end: Alignment(
-                  -sin(_animationController.value * 2 * 3.14),
-                  cos(_animationController.value * 2 * 3.14),
-                ),
-                colors: const [
-                  Color.fromARGB(255, 83, 70, 70),
-                  Color.fromARGB(255, 105, 82, 64),
-                  Color.fromARGB(255, 95, 75, 67),
-                  Color.fromARGB(255, 83, 70, 70),
-                ],
+                gradient: LinearGradient(
+              begin: Alignment(
+                0.0, // Fijo en x
+                -1.0 + (1 * _animationController.value), // Varía de -1 a 1 en y
               ),
-            ),
+              end: Alignment(
+                0.0, // Fijo en x
+                1.5 + (1 * _animationController.value), // Varía de 0 a 2 en y
+              ),
+              colors: const [
+                Color.fromARGB(255, 83, 70, 70),
+                Color.fromARGB(255, 105, 82, 64),
+                Color.fromARGB(255, 95, 75, 67),
+                Color.fromARGB(255, 83, 70, 70),
+              ],
+            )),
             child: SafeArea(
               child: Center(
                 child: SingleChildScrollView(
@@ -69,14 +69,11 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                     children: [
                       Image.asset('assets/logo.png', width: 200, height: 200),
                       const SizedBox(height: 40),
-                      const Text(
-                        'FeastFit',
-                        style: TextStyle(
-                          fontSize: 32,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white
-                        )
-                      ),
+                      const Text('FeastFit',
+                          style: TextStyle(
+                              fontSize: 32,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white)),
                       const SizedBox(height: 40),
                       Form(
                         key: _formKey,
@@ -86,17 +83,22 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                               controller: _emailController,
                               decoration: InputDecoration(
                                 hintText: 'Correo electrónico',
-                                prefixIcon: const Icon(Icons.email, color: Colors.white70),
+                                prefixIcon: const Icon(Icons.email,
+                                    color: Colors.white70),
                                 filled: true,
                                 fillColor: Colors.white24,
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(30),
                                   borderSide: BorderSide.none,
                                 ),
-                                hintStyle: const TextStyle(color: Colors.white70),
+                                hintStyle:
+                                    const TextStyle(color: Colors.white70),
                               ),
                               style: const TextStyle(color: Colors.white),
-                              validator: (value) => value == null || value.isEmpty ? 'Por favor ingresa tu correo' : null,
+                              validator: (value) =>
+                                  value == null || value.isEmpty
+                                      ? 'Por favor ingresa tu correo'
+                                      : null,
                             ),
                             const SizedBox(height: 20),
                             TextFormField(
@@ -104,10 +106,13 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                               obscureText: !_isPasswordVisible,
                               decoration: InputDecoration(
                                 hintText: 'Contraseña',
-                                prefixIcon: const Icon(Icons.lock, color: Colors.white70),
+                                prefixIcon: const Icon(Icons.lock,
+                                    color: Colors.white70),
                                 suffixIcon: IconButton(
                                   icon: Icon(
-                                    _isPasswordVisible ? Icons.visibility_off : Icons.visibility,
+                                    _isPasswordVisible
+                                        ? Icons.visibility_off
+                                        : Icons.visibility,
                                     color: Colors.white70,
                                   ),
                                   onPressed: () {
@@ -122,23 +127,29 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                                   borderRadius: BorderRadius.circular(30),
                                   borderSide: BorderSide.none,
                                 ),
-                                hintStyle: const TextStyle(color: Colors.white70),
+                                hintStyle:
+                                    const TextStyle(color: Colors.white70),
                               ),
                               style: const TextStyle(color: Colors.white),
-                              validator: (value) => value == null || value.isEmpty ? 'Por favor ingresa tu contraseña' : null,
+                              validator: (value) =>
+                                  value == null || value.isEmpty
+                                      ? 'Por favor ingresa tu contraseña'
+                                      : null,
                             ),
                             const SizedBox(height: 10),
                             Align(
                               alignment: Alignment.centerRight,
                               child: TextButton(
-                                onPressed: () { Navigator.push(
-                                      context,
-                                      MaterialPageRoute(builder: (context) => const ForgotPasswordScreen()),
-                                    );},
-                                child: const Text(
-                                  '¿Olvidaste tu contraseña?',
-                                  style: TextStyle(color: Colors.white)
-                                ),
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const ForgotPasswordScreen()),
+                                  );
+                                },
+                                child: const Text('¿Olvidaste tu contraseña?',
+                                    style: TextStyle(color: Colors.white)),
                               ),
                             ),
                             const SizedBox(height: 30),
@@ -147,38 +158,36 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                               style: ElevatedButton.styleFrom(
                                 foregroundColor: Colors.blue.shade700,
                                 backgroundColor: Colors.white,
-                                padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 50, vertical: 15),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(30),
                                 ),
                               ),
-                              child: const Text(
-                                'Iniciar Sesión',
-                                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)
-                              ),
+                              child: const Text('Iniciar Sesión',
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold)),
                             ),
                             const SizedBox(height: 20),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                const Text(
-                                  '¿No tienes una cuenta?',
-                                  style: TextStyle(color: Colors.white70)
-                                ),
+                                const Text('¿No tienes una cuenta?',
+                                    style: TextStyle(color: Colors.white70)),
                                 TextButton(
                                   onPressed: () {
                                     Navigator.push(
                                       context,
-                                      MaterialPageRoute(builder: (context) => const RegisterScreen()),
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const RegisterScreen()),
                                     );
                                   },
-                                  child: const Text(
-                                    'Regístrate',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold
-                                    )
-                                  ),
+                                  child: const Text('Regístrate',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold)),
                                 ),
                               ],
                             ),

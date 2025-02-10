@@ -1,5 +1,4 @@
 import 'package:feast_fit/screens/screens.dart';
-import 'package:feast_fit/widgets/custom_appbar_2_elements.dart';
 import 'package:flutter/material.dart';
 
 class MainScreen extends StatelessWidget {

@@ -10,7 +10,8 @@ class RegisterScreen extends StatefulWidget {
   _RegisterScreenState createState() => _RegisterScreenState();
 }
 
-class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProviderStateMixin {
+class _RegisterScreenState extends State<RegisterScreen>
+    with SingleTickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
   bool _isPasswordVisible = false;
   final _nameController = TextEditingController();
@@ -22,16 +23,16 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
   void initState() {
     super.initState();
     _animationController = AnimationController(
-      duration: const Duration(seconds: 5),
       vsync: this,
-    )..repeat();
+      duration: const Duration(seconds: 8),
+    )..repeat(reverse: true);
   }
 
   void _register() {
     if (_formKey.currentState!.validate()) {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const HomeScreen()),
+        MaterialPageRoute(builder: (context) => const MainScreen()),
       );
     }
   }
@@ -44,23 +45,22 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
         builder: (context, child) {
           return Container(
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment(
-                  cos(_animationController.value * 2 * 3.14),
-                  sin(_animationController.value * 2 * 3.14),
-                ),
-                end: Alignment(
-                  -sin(_animationController.value * 2 * 3.14),
-                  cos(_animationController.value * 2 * 3.14),
-                ),
-                colors: const [
-                  Color.fromARGB(255, 83, 70, 70),
-                  Color.fromARGB(255, 105, 82, 64),
-                  Color.fromARGB(255, 95, 75, 67),
-                  Color.fromARGB(255, 83, 70, 70),
-                ],
+                gradient: LinearGradient(
+              begin: Alignment(
+                0.0, // Fijo en x
+                -1.0 + (1 * _animationController.value), // Varía de -1 a 1 en y
               ),
-            ),
+              end: Alignment(
+                0.0, // Fijo en x
+                1.5 + (1 * _animationController.value), // Varía de 0 a 2 en y
+              ),
+              colors: const [
+                Color.fromARGB(255, 83, 70, 70),
+                Color.fromARGB(255, 105, 82, 64),
+                Color.fromARGB(255, 95, 75, 67),
+                Color.fromARGB(255, 83, 70, 70),
+              ],
+            )),
             child: SafeArea(
               child: Center(
                 child: SingleChildScrollView(
@@ -68,16 +68,14 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Icon(Icons.person_add_outlined, size: 80, color: Colors.white),
+                      const Icon(Icons.person_add_outlined,
+                          size: 80, color: Colors.white),
                       const SizedBox(height: 30),
-                      const Text(
-                        'Crear Cuenta',
-                        style: TextStyle(
-                          fontSize: 32,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white
-                        )
-                      ),
+                      const Text('Crear Cuenta',
+                          style: TextStyle(
+                              fontSize: 32,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white)),
                       const SizedBox(height: 40),
                       Form(
                         key: _formKey,
@@ -87,36 +85,45 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
                               controller: _nameController,
                               decoration: InputDecoration(
                                 hintText: 'Nombre completo',
-                                prefixIcon: const Icon(Icons.person, color: Colors.white70),
+                                prefixIcon: const Icon(Icons.person,
+                                    color: Colors.white70),
                                 filled: true,
                                 fillColor: Colors.white24,
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(30),
                                   borderSide: BorderSide.none,
                                 ),
-                                hintStyle: const TextStyle(color: Colors.white70),
+                                hintStyle:
+                                    const TextStyle(color: Colors.white70),
                               ),
                               style: const TextStyle(color: Colors.white),
-                              validator: (value) => value == null || value.isEmpty ? 'Por favor ingresa tu nombre' : null,
+                              validator: (value) =>
+                                  value == null || value.isEmpty
+                                      ? 'Por favor ingresa tu nombre'
+                                      : null,
                             ),
                             const SizedBox(height: 20),
                             TextFormField(
                               controller: _emailController,
                               decoration: InputDecoration(
                                 hintText: 'Correo electrónico',
-                                prefixIcon: const Icon(Icons.email, color: Colors.white70),
+                                prefixIcon: const Icon(Icons.email,
+                                    color: Colors.white70),
                                 filled: true,
                                 fillColor: Colors.white24,
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(30),
                                   borderSide: BorderSide.none,
                                 ),
-                                hintStyle: const TextStyle(color: Colors.white70),
+                                hintStyle:
+                                    const TextStyle(color: Colors.white70),
                               ),
                               style: const TextStyle(color: Colors.white),
                               validator: (value) {
-                                if (value == null || value.isEmpty) return 'Por favor ingresa tu correo';
-                                if (!value.contains('@')) return 'Ingresa un correo válido';
+                                if (value == null || value.isEmpty)
+                                  return 'Por favor ingresa tu correo';
+                                if (!value.contains('@'))
+                                  return 'Ingresa un correo válido';
                                 return null;
                               },
                             ),
@@ -126,10 +133,13 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
                               obscureText: !_isPasswordVisible,
                               decoration: InputDecoration(
                                 hintText: 'Contraseña',
-                                prefixIcon: const Icon(Icons.lock, color: Colors.white70),
+                                prefixIcon: const Icon(Icons.lock,
+                                    color: Colors.white70),
                                 suffixIcon: IconButton(
                                   icon: Icon(
-                                    _isPasswordVisible ? Icons.visibility_off : Icons.visibility,
+                                    _isPasswordVisible
+                                        ? Icons.visibility_off
+                                        : Icons.visibility,
                                     color: Colors.white70,
                                   ),
                                   onPressed: () {
@@ -144,12 +154,15 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
                                   borderRadius: BorderRadius.circular(30),
                                   borderSide: BorderSide.none,
                                 ),
-                                hintStyle: const TextStyle(color: Colors.white70),
+                                hintStyle:
+                                    const TextStyle(color: Colors.white70),
                               ),
                               style: const TextStyle(color: Colors.white),
                               validator: (value) {
-                                if (value == null || value.isEmpty) return 'Por favor ingresa una contraseña';
-                                if (value.length < 6) return 'La contraseña debe tener al menos 6 caracteres';
+                                if (value == null || value.isEmpty)
+                                  return 'Por favor ingresa una contraseña';
+                                if (value.length < 6)
+                                  return 'La contraseña debe tener al menos 6 caracteres';
                                 return null;
                               },
                             ),
@@ -159,33 +172,29 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
                               style: ElevatedButton.styleFrom(
                                 foregroundColor: Colors.blue.shade700,
                                 backgroundColor: Colors.white,
-                                padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 50, vertical: 15),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(30),
                                 ),
                               ),
-                              child: const Text(
-                                'Registrarse',
-                                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)
-                              ),
+                              child: const Text('Registrarse',
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold)),
                             ),
                             const SizedBox(height: 20),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                const Text(
-                                  '¿Ya tienes una cuenta?',
-                                  style: TextStyle(color: Colors.white70)
-                                ),
+                                const Text('¿Ya tienes una cuenta?',
+                                    style: TextStyle(color: Colors.white70)),
                                 TextButton(
                                   onPressed: () => Navigator.pop(context),
-                                  child: const Text(
-                                    'Inicia Sesión',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold
-                                    )
-                                  ),
+                                  child: const Text('Inicia Sesión',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold)),
                                 ),
                               ],
                             ),
