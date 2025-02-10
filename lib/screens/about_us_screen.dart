@@ -12,7 +12,8 @@ class AboutUsScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Profile'),
+        automaticallyImplyLeading: false,
+        title: const Text('Sobre Nosotros'),
         actions: [
           PopupMenuButton<String>(
             onSelected: (value) {
