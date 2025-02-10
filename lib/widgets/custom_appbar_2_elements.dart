@@ -3,10 +3,10 @@ import 'package:feast_fit/theme/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
+class CustomAppBar2 extends StatelessWidget implements PreferredSizeWidget {
   final String title;
 
-  const CustomAppBar({
+  const CustomAppBar2({
     super.key,
     required this.title,
   });
@@ -49,13 +49,6 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                 child: ListTile(
                   leading: Icon(Icons.settings),
                   title: Text('Ajustes'),
-                ),
-              ),
-              const PopupMenuItem<String>(
-                value: 'home',
-                child: ListTile(
-                  leading: Icon(Icons.home),
-                  title: Text('Home'),
                 ),
               ),
             ];
