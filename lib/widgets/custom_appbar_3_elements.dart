@@ -29,7 +29,7 @@ class CustomAppBar3 extends StatelessWidget implements PreferredSizeWidget {
             } else if (value == 'home') {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const HomeScreen()),
+                MaterialPageRoute(builder: (context) => const MainScreen()),
               );
             } else if (value == 'toggle_theme') {
               themeProvider.toggleTheme();
