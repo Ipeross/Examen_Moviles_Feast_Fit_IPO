@@ -1,7 +1,6 @@
 import 'package:feast_fit/screens/forgot_password_screen.dart';
 import 'package:feast_fit/screens/screens.dart';
 import 'package:feast_fit/widgets/widgets.dart';
-
 import 'package:flutter/material.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -180,8 +179,7 @@ class _LoginScreenState extends State<LoginScreen>
                 ),
               ),
             ),
-          )
-          );
+          ));
   }
 
   @override

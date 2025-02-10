@@ -14,7 +14,7 @@ class AnimatedGradientBackground extends StatefulWidget {
       Color.fromARGB(255, 95, 75, 67),
       Color.fromARGB(255, 83, 70, 70),
     ],
-    this.duration = const Duration(seconds: 8),
+    this.duration = const Duration(seconds: 7),
   });
 
   @override
@@ -43,18 +43,19 @@ class _AnimatedGradientBackgroundState extends State<AnimatedGradientBackground>
           decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment(
-                0.0,
-                -2.0 + (4 * _animationController.value <= 2 
-                  ? _animationController.value * 2 
-                  : 4 - (_animationController.value * 2)),
+                0.0, // Fijo en x
+                -1.0 + (1 * _animationController.value), // Varía de -1 a 1 en y
               ),
               end: Alignment(
-                0.0,
-                2.0 + (4 * _animationController.value <= 2 
-                  ? _animationController.value * 2 
-                  : 4 - (_animationController.value * 2)),
+                0.0, // Fijo en x
+                1.5 + (1 * _animationController.value), // Varía de 0 a 2 en y
               ),
-              colors: widget.colors,
+              colors: const [
+                Color.fromARGB(255, 78, 61, 61),
+                Color.fromARGB(255, 105, 82, 64),
+                Color.fromARGB(255, 95, 75, 67),
+                Color.fromARGB(255, 83, 70, 70),
+              ],
             ),
           ),
           child: child,
