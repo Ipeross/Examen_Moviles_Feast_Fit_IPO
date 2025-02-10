@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'package:feast_fit/screens/forgot_password_screen.dart';
 import 'package:feast_fit/screens/screens.dart';
 import 'package:flutter/material.dart';
@@ -54,7 +53,7 @@ class _LoginScreenState extends State<LoginScreen>
                 1.5 + (1 * _animationController.value), // Varía de 0 a 2 en y
               ),
               colors: const [
-                Color.fromARGB(255, 83, 70, 70),
+                Color.fromARGB(255, 78, 61, 61),
                 Color.fromARGB(255, 105, 82, 64),
                 Color.fromARGB(255, 95, 75, 67),
                 Color.fromARGB(255, 83, 70, 70),
