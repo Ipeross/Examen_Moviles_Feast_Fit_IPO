@@ -1,5 +1,7 @@
 import 'package:feast_fit/screens/screens.dart';
 import 'package:feast_fit/theme/theme_provider.dart';
+import 'package:feast_fit/widgets/widgets.dart';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -62,44 +64,17 @@ class AboutUsScreen extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(16.0),
         children: const [
-          Text(
-            'Sobre Nosotros',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: Color.fromARGB(255, 104, 85, 56),
-            ),
+          InfoSection(
+            title: 'Sobre Nosotros',
+            text: 'Aquí puedes escribir información sobre nosotros. '
+                'Este es el apartado donde puedes detallar quiénes son las personas detrás de la empresa, '
+                'sus valores, su misión y cualquier otra información relevante.',
           ),
-          SizedBox(height: 10),
-          Text(
-            'Aquí puedes escribir información sobre nosotros. '
-            'Este es el apartado donde puedes detallar quiénes son las personas detrás de la empresa, '
-            'sus valores, su misión y cualquier otra información relevante.',
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.black87,
-              height: 1.5,
-            ),
-          ),
-          SizedBox(height: 20),
-          Text(
-            'Sobre la Empresa',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: Color.fromARGB(255, 104, 85, 56),
-            ),
-          ),
-          SizedBox(height: 10),
-          Text(
-            'Aquí puedes escribir información sobre la empresa. '
-            'Este es el apartado donde podríamos detallar la historia de la empresa, '
-            'sus productos o servicios, su visión y cualquier otra información relevante.',
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.black87,
-              height: 1.5,
-            ),
+          InfoSection(
+            title: 'Sobre la Empresa',
+            text: 'Aquí puedes escribir información sobre la empresa. '
+                'Este es el apartado donde podríamos detallar la historia de la empresa, '
+                'sus productos o servicios, su visión y cualquier otra información relevante.',
           ),
         ],
       ),
