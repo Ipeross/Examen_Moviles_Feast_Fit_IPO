@@ -30,7 +30,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
     if (_formKey.currentState!.validate()) {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const HomeScreen()),
+        MaterialPageRoute(builder: (context) => const MainScreen()),
       );
     }
   }
