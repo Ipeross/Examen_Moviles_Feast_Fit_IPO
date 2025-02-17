@@ -27,6 +27,8 @@ class HomeScreen extends StatelessWidget {
                   _buildFeaturedRecipe(context),
                   const SizedBox(height: 20),
                   _buildRecommendedRecipes(context),
+                  const SizedBox(height: 20),
+                  _buildDailyPlan(context),
                 ],
               ),
             ),
@@ -92,6 +94,37 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
+  Widget _buildDailyPlan(BuildContext context) {
+    final List<Map<String, String>> meals = [
+      {'name': 'Desayuno', 'image': 'assets/oatmeal.jpg'},
+      {'name': 'Almuerzo', 'image': 'assets/oatmeal.jpg'},
+      {'name': 'Cena', 'image': 'assets/oatmeal.jpg'},
+      {'name': 'Snack', 'image': 'assets/oatmeal.jpg'},
+    ];
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Plan del Día',
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 10),
+        SizedBox(
+          height: 150,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: meals.length,
+            itemBuilder: (context, index) {
+              return _buildRecipeCard(
+                  meals[index]['name']!, meals[index]['image']!);
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _buildRecipeCard(String title, String imagePath) {
     return Padding(
       padding: const EdgeInsets.only(right: 10),
@@ -101,13 +134,13 @@ class HomeScreen extends StatelessWidget {
           children: [
             Image.asset(
               imagePath,
-              width: 120,
-              height: 150,
+              width: 130,
+              height: 130,
               fit: BoxFit.cover,
             ),
             Container(
-              width: 120,
-              height: 150,
+              width: 130,
+              height: 130,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [Colors.black.withOpacity(0.6), Colors.transparent],
