@@ -25,6 +25,8 @@ class HomeScreen extends StatelessWidget {
               child: ListView(
                 children: [
                   _buildFeaturedRecipe(context),
+                  const SizedBox(height: 20),
+                  _buildRecommendedRecipes(context),
                 ],
               ),
             ),
@@ -56,6 +58,64 @@ class HomeScreen extends StatelessWidget {
             style: TextStyle(
                 color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildRecommendedRecipes(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Recomendaciones',
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 10),
+        SizedBox(
+          height: 150,
+          child: ListView(
+            scrollDirection: Axis.horizontal,
+            children: [
+              _buildRecipeCard('Smoothie de Fresa', 'assets/smoothie.jpg'),
+              _buildRecipeCard('Avena con Frutas', 'assets/oatmeal.jpg'),
+              _buildRecipeCard('Tostadas con Aguacate', 'assets/aguacate.jpg'),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildRecipeCard(String title, String imagePath) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 10),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(12),
+        child: Stack(
+          children: [
+            Image.asset(
+              imagePath,
+              width: 120,
+              height: 150,
+              fit: BoxFit.cover,
+            ),
+            Container(
+              width: 120,
+              height: 150,
+              child: Align(
+                alignment: Alignment.bottomLeft,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    title,
+                    style: const TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
