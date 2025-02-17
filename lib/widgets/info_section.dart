@@ -12,23 +12,29 @@ class InfoSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           title,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.bold,
-            color: Color.fromARGB(255, 104, 85, 56),
+            // Color adaptativo para el título
+            color: isDarkMode 
+              ? const Color.fromARGB(255, 219, 200, 171) 
+              : const Color.fromARGB(255, 104, 85, 56), 
           ),
         ),
         const SizedBox(height: 10),
         Text(
           text,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 16,
-            color: Colors.black87,
+            // Color adaptativo para el texto
+            color: isDarkMode ? Colors.white70 : Colors.black87,
             height: 1.5,
           ),
         ),
