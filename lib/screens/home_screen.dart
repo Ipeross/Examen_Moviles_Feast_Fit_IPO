@@ -50,6 +50,11 @@ class HomeScreen extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
+          gradient: LinearGradient(
+            colors: [Colors.black.withOpacity(0.6), Colors.transparent],
+            begin: Alignment.bottomCenter,
+            end: Alignment.topCenter,
+          ),
         ),
         child: const Align(
           alignment: Alignment.bottomLeft,
@@ -103,6 +108,13 @@ class HomeScreen extends StatelessWidget {
             Container(
               width: 120,
               height: 150,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Colors.black.withOpacity(0.6), Colors.transparent],
+                  begin: Alignment.bottomCenter,
+                  end: Alignment.topCenter,
+                ),
+              ),
               child: Align(
                 alignment: Alignment.bottomLeft,
                 child: Padding(
