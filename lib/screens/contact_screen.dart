@@ -85,6 +85,27 @@ class ContactScreen extends StatelessWidget {
                 ),
               ),
             ),
+            const SizedBox(height: 16),
+
+            // Botón de enviar
+            ElevatedButton(
+              onPressed: () {
+                // Acción para enviar el formulario (por ahora no tiene funcionalidad)
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Formulario enviado')),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: themeProvider.themeMode == ThemeMode.dark
+                  ? const Color.fromARGB(255, 182, 156, 99)
+                  : const Color.fromARGB(255, 117, 95, 62),
+                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: const Text('Enviar', style: TextStyle(fontSize: 16)),
+            ),
           ],
         ),
       ),
