@@ -63,6 +63,19 @@ class SettingsScreen extends StatelessWidget {
               );
             },
           ),
+          // Nuevo campo: Contacto
+          SettingsList(
+            icon: Icons.contact_mail, // Icono para contacto
+            title: 'Contacto',
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ContactScreen(), // Navega a ContactScreen
+                ),
+              );
+            },
+          ),
         ],
       ),
     );
