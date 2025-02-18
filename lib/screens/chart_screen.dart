@@ -9,8 +9,10 @@ class ChartScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Scaffold(
       appBar: CustomAppBar2(title: 'Gráfico'),
-      body: Center(
-         child: Text('ChartScreen'),
+      body: BackgroundContainer(
+        child: Center(
+           child: Text('ChartScreen'),
+        ),
       ),
     );
   }

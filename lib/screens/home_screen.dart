@@ -10,29 +10,31 @@ class HomeScreen extends StatelessWidget {
       appBar: const CustomAppBar2(
         title: 'Bienvenido a FeastFit',
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 10),
-            const Text(
-              'Explora recetas saludables y personaliza tu plan de alimentación.',
-              style: TextStyle(fontSize: 16, color: Colors.grey),
-            ),
-            const SizedBox(height: 20),
-            Expanded(
-              child: ListView(
-                children: [
-                  _buildFeaturedRecipe(context),
-                  const SizedBox(height: 20),
-                  _buildRecommendedRecipes(context),
-                  const SizedBox(height: 20),
-                  _buildDailyPlan(context),
-                ],
+      body: BackgroundContainer(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 10),
+              const Text(
+                'Explora recetas saludables y personaliza tu plan de alimentación.',
+                style: TextStyle(fontSize: 16, color: Colors.grey),
               ),
-            ),
-          ],
+              const SizedBox(height: 20),
+              Expanded(
+                child: ListView(
+                  children: [
+                    _buildFeaturedRecipe(context),
+                    const SizedBox(height: 20),
+                    _buildRecommendedRecipes(context),
+                    const SizedBox(height: 20),
+                    _buildDailyPlan(context),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

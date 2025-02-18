@@ -1,4 +1,4 @@
-import 'package:feast_fit/widgets/custom_appbar_2_elements.dart';
+import 'package:feast_fit/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
 class FoodScreen extends StatelessWidget {
@@ -9,8 +9,10 @@ class FoodScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Scaffold(
       appBar: CustomAppBar2(title: 'Dieta'),
-      body: Center(
-         child: Text('FoodScreen'),
+      body: BackgroundContainer(
+        child: Center(
+           child: Text('FoodScreen'),
+        ),
       ),
     );
   }
