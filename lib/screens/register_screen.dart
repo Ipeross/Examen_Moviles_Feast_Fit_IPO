@@ -36,6 +36,10 @@ class _RegisterScreenState extends State<RegisterScreen>
     }
   }
 
+  void _signUpWithGoogle() async {
+    // Aquí irá la integración con Firebase Auth
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -170,6 +174,57 @@ class _RegisterScreenState extends State<RegisterScreen>
                         child: const Text('Registrarse',
                             style: TextStyle(
                                 fontSize: 18, fontWeight: FontWeight.bold)),
+                      ),
+                      const SizedBox(height: 20),
+                      const Row(
+                        children: [
+                          Expanded(
+                            child: Divider(
+                              color: Colors.white70,
+                              thickness: 1,
+                              indent: 20,
+                              endIndent: 10,
+                            ),
+                          ),
+                          Text(
+                            'O',
+                            style: TextStyle(color: Colors.white70, fontSize: 16),
+                          ),
+                          Expanded(
+                            child: Divider(
+                              color: Colors.white70,
+                              thickness: 1,
+                              indent: 10,
+                              endIndent: 20,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 20),
+                      OutlinedButton.icon(
+                        onPressed: _signUpWithGoogle,
+                        icon: Image.asset(
+                          'assets/google_logo.png',
+                          height: 24,
+                          width: 24,
+                        ),
+                        label: const Text(
+                          'Registrarse con Google',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: Colors.white,
+                          side: const BorderSide(color: Colors.white),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 30, vertical: 12),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                        ),
                       ),
                       const SizedBox(height: 20),
                       Row(
