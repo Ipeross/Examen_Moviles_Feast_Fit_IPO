@@ -17,7 +17,10 @@ class CustomAppBar2 extends StatelessWidget implements PreferredSizeWidget {
 
     return AppBar(
       automaticallyImplyLeading: false,
-      title: Text(title),
+      title: Text(
+        title,
+        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+      ),
       actions: [
         PopupMenuButton<String>(
           onSelected: (value) {
@@ -40,8 +43,12 @@ class CustomAppBar2 extends StatelessWidget implements PreferredSizeWidget {
               PopupMenuItem<String>(
                 value: 'toggle_theme',
                 child: ListTile(
-                  leading: Icon(themeProvider.themeMode == ThemeMode.dark ? Icons.light_mode : Icons.dark_mode),
-                  title: Text(themeProvider.themeMode == ThemeMode.dark ? 'Modo Claro' : 'Modo Oscuro'),
+                  leading: Icon(themeProvider.themeMode == ThemeMode.dark
+                      ? Icons.light_mode
+                      : Icons.dark_mode),
+                  title: Text(themeProvider.themeMode == ThemeMode.dark
+                      ? 'Modo Claro'
+                      : 'Modo Oscuro'),
                 ),
               ),
               const PopupMenuItem<String>(
