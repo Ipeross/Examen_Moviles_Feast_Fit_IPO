@@ -58,7 +58,7 @@ class BackgroundContainer extends StatelessWidget {
                             const Color(0xFF1A1A1A).withOpacity(0),
                           ]
                         : [
-                            const Color(0xFFCCCCCC).withOpacity(0.7),
+                            const Color.fromARGB(255, 255, 255, 255).withOpacity(0.7),
                             const Color(0xFFFFF5F5).withOpacity(0.0),
                           ],
                   ),
@@ -81,8 +81,8 @@ class BackgroundContainer extends StatelessWidget {
                           const Color(0xFF1A1A1A).withOpacity(0),
                         ]
                       : [
-                          const Color(0xFFCCCCCC).withOpacity(0.7),
-                          const Color(0xFFFFF5F5).withOpacity(0.0),
+                          const Color.fromARGB(255, 255, 255, 255).withOpacity(0.7),
+                          const Color.fromARGB(255, 255, 255, 255).withOpacity(0.0),
                         ],
                 ),
               ),

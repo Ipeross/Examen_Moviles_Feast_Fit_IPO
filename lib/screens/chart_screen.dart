@@ -7,13 +7,16 @@ class ChartScreen extends StatelessWidget {
   
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      appBar: CustomAppBar2(title: 'Gráfico'),
-      body: BackgroundContainer(
-        child: Center(
-           child: Text('ChartScreen'),
+    return const Column(
+      children: [
+        CustomAppBar2(title: 'Gráfico'),
+        Expanded(
+          child: Center(
+             child: Text('ChartScreen'),
+          ),
         ),
-      ),
+      ]
+      
     );
   }
 }

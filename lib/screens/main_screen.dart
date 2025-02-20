@@ -1,4 +1,5 @@
 import 'package:feast_fit/screens/screens.dart';
+import 'package:feast_fit/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
 class MainScreen extends StatelessWidget {
@@ -9,12 +10,14 @@ class MainScreen extends StatelessWidget {
     return const DefaultTabController(
       length: 3, // Número de pestañas
       child: Scaffold(
-        body: TabBarView(
-          children: [
-            HomeScreen(),
-            FoodScreen(),
-            ChartScreen(),
-          ],
+        body: BackgroundContainer(
+          child: TabBarView(
+            children: [
+              HomeScreen(),
+              FoodScreen(),
+              ChartScreen(),
+            ],
+          ),
         ),
         bottomNavigationBar: TabBar(
           tabs: [
