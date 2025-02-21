@@ -21,6 +21,12 @@ class _ChartScreenState extends State<ChartScreen> {
     FlSpot(2, 15),
   ];
 
+  final List<String> dates = [
+    '2023-01-01',
+    '2023-01-02',
+    '2023-01-03',
+  ];
+
   void toggleChartType() {
     setState(() {
       isBarChart = !isBarChart;
@@ -51,7 +57,9 @@ class _ChartScreenState extends State<ChartScreen> {
                           barRods: [
                             BarChartRodData(
                               y: spot.y,
-                              colors: [gradientColors[index % gradientColors.length]],
+                              colors: [
+                                gradientColors[index % gradientColors.length]
+                              ],
                               width: 20,
                               borderRadius: BorderRadius.circular(4),
                             ),
@@ -60,8 +68,21 @@ class _ChartScreenState extends State<ChartScreen> {
                         );
                       }).toList(),
                       titlesData: FlTitlesData(
-                        bottomTitles: SideTitles(showTitles: true),
-                        leftTitles: SideTitles(showTitles: true),
+                        bottomTitles: SideTitles(
+                          showTitles: true,
+                          getTitles: (value) {
+                            return dates[value.toInt()];
+                          },
+                        ),
+                        leftTitles: SideTitles(
+                          showTitles: false,
+                        ),
+                        topTitles: SideTitles(
+                          showTitles: false,
+                        ),
+                        rightTitles: SideTitles(
+                          showTitles: false,
+                        ),
                       ),
                       borderData: FlBorderData(show: false),
                       barTouchData: BarTouchData(enabled: false),
@@ -79,13 +100,28 @@ class _ChartScreenState extends State<ChartScreen> {
                           dotData: FlDotData(show: true),
                           belowBarData: BarAreaData(
                             show: true,
-                            colors: gradientColors.map((color) => color.withOpacity(0.3)).toList(),
+                            colors: gradientColors
+                                .map((color) => color.withOpacity(0.3))
+                                .toList(),
                           ),
                         ),
                       ],
                       titlesData: FlTitlesData(
-                        bottomTitles: SideTitles(showTitles: true),
-                        leftTitles: SideTitles(showTitles: true),
+                        bottomTitles: SideTitles(
+                          showTitles: true,
+                          getTitles: (value) {
+                            return dates[value.toInt()];
+                          },
+                        ),
+                        leftTitles: SideTitles(
+                          showTitles: false,
+                        ),
+                        topTitles: SideTitles(
+                          showTitles: false,
+                        ),
+                        rightTitles: SideTitles(
+                          showTitles: false,
+                        ),
                       ),
                       borderData: FlBorderData(show: false),
                       lineTouchData: LineTouchData(enabled: false),
@@ -96,9 +132,12 @@ class _ChartScreenState extends State<ChartScreen> {
           ElevatedButton(
             onPressed: toggleChartType,
             style: ElevatedButton.styleFrom(
-              foregroundColor: Colors.white, backgroundColor: gradientColors.first,
+              foregroundColor: Colors.white,
+              backgroundColor: gradientColors.first,
             ),
-            child: Text(isBarChart ? 'Cambiar a Gráfico de Líneas' : 'Cambiar a Gráfico de Barras'),
+            child: Text(isBarChart
+                ? 'Cambiar a Gráfico de Líneas'
+                : 'Cambiar a Gráfico de Barras'),
           ),
         ],
       ),
