@@ -9,6 +9,18 @@ class ChartScreen extends StatefulWidget {
 class _ChartScreenState extends State<ChartScreen> {
   bool isBarChart = true;
 
+  final List<Color> gradientColors = [
+    const Color(0xffc08f66),
+    const Color(0xffa2674b),
+    const Color(0xff8b4f32),
+  ];
+
+  final List<FlSpot> chartData = [
+    FlSpot(0, 12),
+    FlSpot(1, 8),
+    FlSpot(2, 15),
+  ];
+
   void toggleChartType() {
     setState(() {
       isBarChart = !isBarChart;
@@ -19,7 +31,8 @@ class _ChartScreenState extends State<ChartScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Chart Screen'),
+        title: Text('Chart Screen'),
+        backgroundColor: gradientColors.first,
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -30,51 +43,61 @@ class _ChartScreenState extends State<ChartScreen> {
             child: isBarChart
                 ? BarChart(
                     BarChartData(
-                      barGroups: [
-                        BarChartGroupData(
-                          x: 0,
+                      barGroups: chartData.asMap().entries.map((entry) {
+                        int index = entry.key;
+                        FlSpot spot = entry.value;
+                        return BarChartGroupData(
+                          x: index,
                           barRods: [
-                            BarChartRodData(y: 12, colors: [Colors.blue]),
+                            BarChartRodData(
+                              y: spot.y,
+                              colors: [gradientColors[index % gradientColors.length]],
+                              width: 20,
+                              borderRadius: BorderRadius.circular(4),
+                            ),
                           ],
-                        ),
-                        BarChartGroupData(
-                          x: 1,
-                          barRods: [
-                            BarChartRodData(y: 8, colors: [Colors.red]),
-                          ],
-                        ),
-                        BarChartGroupData(
-                          x: 2,
-                          barRods: [
-                            BarChartRodData(y: 15, colors: [Colors.green]),
-                          ],
-                        ),
-                      ],
+                          showingTooltipIndicators: [0],
+                        );
+                      }).toList(),
+                      titlesData: FlTitlesData(
+                        bottomTitles: SideTitles(showTitles: true),
+                        leftTitles: SideTitles(showTitles: true),
+                      ),
+                      borderData: FlBorderData(show: false),
+                      barTouchData: BarTouchData(enabled: false),
                     ),
                   )
                 : LineChart(
                     LineChartData(
                       lineBarsData: [
                         LineChartBarData(
-                          spots: [
-                            const FlSpot(0, 12),
-                            const FlSpot(1, 8),
-                            const FlSpot(2, 15),
-                          ],
+                          spots: chartData,
                           isCurved: true,
-                          colors: [Colors.blue],
+                          colors: gradientColors,
                           barWidth: 4,
                           isStrokeCapRound: true,
-                          dotData: FlDotData(show: false),
-                          belowBarData: BarAreaData(show: false),
+                          dotData: FlDotData(show: true),
+                          belowBarData: BarAreaData(
+                            show: true,
+                            colors: gradientColors.map((color) => color.withOpacity(0.3)).toList(),
+                          ),
                         ),
                       ],
+                      titlesData: FlTitlesData(
+                        bottomTitles: SideTitles(showTitles: true),
+                        leftTitles: SideTitles(showTitles: true),
+                      ),
+                      borderData: FlBorderData(show: false),
+                      lineTouchData: LineTouchData(enabled: false),
                     ),
                   ),
           ),
           const SizedBox(height: 20),
           ElevatedButton(
             onPressed: toggleChartType,
+            style: ElevatedButton.styleFrom(
+              foregroundColor: Colors.white, backgroundColor: gradientColors.first,
+            ),
             child: Text(isBarChart ? 'Cambiar a Gráfico de Líneas' : 'Cambiar a Gráfico de Barras'),
           ),
         ],
