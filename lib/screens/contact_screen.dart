@@ -24,8 +24,8 @@ class _ContactScreenState extends State<ContactScreen> {
       appBar: const CustomAppBar3(title: '¿Necesitas ayuda?'),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
-        child: Form(  // Aquí encapsulamos todo el contenido en un Form
-          key: _formKey,  // El formulario está asociado a esta clave
+        child: Form(
+          key: _formKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -122,11 +122,9 @@ class _ContactScreenState extends State<ContactScreen> {
               ),
               const SizedBox(height: 16),
 
-              // Botón de enviar
               ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState?.validate() ?? false) {
-                    // Si el formulario es válido, se ejecuta la acción
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('Formulario enviado')),
                     );

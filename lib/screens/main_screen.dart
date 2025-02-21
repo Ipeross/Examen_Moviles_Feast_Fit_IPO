@@ -7,19 +7,19 @@ class MainScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const DefaultTabController(
+    return DefaultTabController(
       length: 3,
       child: Scaffold(
         body: BackgroundContainer(
           child: TabBarView(
             children: [
-              HomeScreen(),
-              FoodScreen(),
+              const HomeScreen(),
+              const FoodScreen(),
               ChartScreen(),
             ],
           ),
         ),
-        bottomNavigationBar: TabBar(
+        bottomNavigationBar: const TabBar(
           tabs: [
             Tab(icon: Icon(Icons.home), text: 'Inicio'),
             Tab(icon: Icon(Icons.fastfood), text: 'Dieta'),
