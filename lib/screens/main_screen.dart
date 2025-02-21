@@ -8,7 +8,7 @@ class MainScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const DefaultTabController(
-      length: 3, // Número de pestañas
+      length: 3,
       child: Scaffold(
         body: BackgroundContainer(
           child: TabBarView(

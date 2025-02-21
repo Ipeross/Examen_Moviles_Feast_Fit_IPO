@@ -22,12 +22,13 @@ class BackgroundContainer extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: useGradient
             ? LinearGradient(
-                begin: Alignment.topCenter,
+                begin: Alignment.topLeft,
                 end: Alignment.bottomCenter,
                 colors: isDarkMode
                     ? [
                         const Color(0xFF1A1A1A),
                         const Color(0xFF2D2D2D),
+                       
                       ]
                     : [
                         const Color.fromARGB(255, 255, 255, 255),
