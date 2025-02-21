@@ -9,7 +9,7 @@ class BackgroundContainer extends StatelessWidget {
     Key? key,
     required this.child,
     this.padding = const EdgeInsets.all(16.0),
-    this.useGradient = true,
+    this.useGradient = false,
   }) : super(key: key);
 
   @override
@@ -28,7 +28,6 @@ class BackgroundContainer extends StatelessWidget {
                     ? [
                         const Color(0xFF1A1A1A),
                         const Color(0xFF2D2D2D),
-                       
                       ]
                     : [
                         const Color.fromARGB(255, 255, 255, 255),
@@ -59,7 +58,8 @@ class BackgroundContainer extends StatelessWidget {
                             const Color(0xFF1A1A1A).withOpacity(0),
                           ]
                         : [
-                            const Color.fromARGB(255, 255, 255, 255).withOpacity(0.7),
+                            const Color.fromARGB(255, 255, 255, 255)
+                                .withOpacity(0.7),
                             const Color(0xFFFFF5F5).withOpacity(0.0),
                           ],
                   ),
@@ -82,8 +82,10 @@ class BackgroundContainer extends StatelessWidget {
                           const Color(0xFF1A1A1A).withOpacity(0),
                         ]
                       : [
-                          const Color.fromARGB(255, 255, 255, 255).withOpacity(0.7),
-                          const Color.fromARGB(255, 255, 255, 255).withOpacity(0.0),
+                          const Color.fromARGB(255, 255, 255, 255)
+                              .withOpacity(0.7),
+                          const Color.fromARGB(255, 255, 255, 255)
+                              .withOpacity(0.0),
                         ],
                 ),
               ),
