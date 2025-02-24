@@ -1,7 +1,7 @@
 import 'package:feast_fit/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
-
+import 'package:intl/intl.dart';
 class ChartScreen extends StatefulWidget {
   @override
   _ChartScreenState createState() => _ChartScreenState();
@@ -16,22 +16,30 @@ class _ChartScreenState extends State<ChartScreen> {
     const Color(0xff8b4f32),
   ];
 
-  final List<FlSpot> chartData = [
-    FlSpot(0, 12),
-    FlSpot(1, 8),
-    FlSpot(2, 15),
-  ];
+  List<FlSpot> chartData = [];
 
-  final List<String> dates = [
-    '2023-01-01',
-    '2023-01-02',
-    '2023-01-03',
-  ];
+  List<String> dates = [];
+
+  final TextEditingController _controllerValue = TextEditingController();
 
   void toggleChartType() {
     setState(() {
       isBarChart = !isBarChart;
     });
+  }
+
+  void addData() {
+    final double value = double.tryParse(_controllerValue.text) ?? 0;
+
+    if (value != 0) {
+      setState(() {
+        String formattedDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+
+        chartData.add(FlSpot(chartData.length.toDouble(), value));
+        dates.add(formattedDate);
+      });
+      _controllerValue.clear();
+    }
   }
 
   @override
@@ -52,7 +60,27 @@ class _ChartScreenState extends State<ChartScreen> {
                   'Visualiza tus datos en diferentes formatos.',
                   style: TextStyle(fontSize: 16, color: Colors.grey),
                 ),
-                const SizedBox(height: 150),
+                const SizedBox(height: 10),
+
+                TextField(
+                  controller: _controllerValue,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(
+                    labelText: 'Valor',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                ElevatedButton(
+                  onPressed: addData,
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    backgroundColor: gradientColors.first,
+                  ),
+                  child: const Text('Agregar Datos'),
+                ),
+                const SizedBox(height: 30),
+
                 SizedBox(
                   width: 300,
                   height: 300,
@@ -68,8 +96,7 @@ class _ChartScreenState extends State<ChartScreen> {
                                   BarChartRodData(
                                     y: spot.y,
                                     colors: [
-                                      gradientColors[
-                                          index % gradientColors.length]
+                                      gradientColors[index % gradientColors.length]
                                     ],
                                     width: 20,
                                     borderRadius: BorderRadius.circular(4),

@@ -125,10 +125,10 @@ class _LoginScreenState extends State<LoginScreen>
                           if (!value.contains(RegExp(r'[0-9]'))) {
                             return 'La contraseña debe contener al menos un número';
                           }
-                          if (!value
-                              .contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
-                            return 'La contraseña debe contener al menos un signo de puntuación';
+                          if (!value.contains(RegExp(r'[^a-zA-Z0-9]'))) {
+                            return 'La contraseña debe contener al menos un símbolo';
                           }
+
                           return null;
                         },
                       ),
@@ -177,7 +177,8 @@ class _LoginScreenState extends State<LoginScreen>
                           ),
                           Text(
                             'O',
-                            style: TextStyle(color: Colors.white70, fontSize: 16),
+                            style:
+                                TextStyle(color: Colors.white70, fontSize: 16),
                           ),
                           Expanded(
                             child: Divider(
