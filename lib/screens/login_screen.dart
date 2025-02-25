@@ -2,6 +2,7 @@ import 'package:feast_fit/screens/forgot_password_screen.dart';
 import 'package:feast_fit/screens/screens.dart';
 import 'package:feast_fit/widgets/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -17,6 +18,7 @@ class _LoginScreenState extends State<LoginScreen>
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   late AnimationController _animationController;
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -27,12 +29,61 @@ class _LoginScreenState extends State<LoginScreen>
     )..repeat(reverse: true);
   }
 
-  void _login() {
+  void _login() async {
     if (_formKey.currentState!.validate()) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const MainScreen()),
-      );
+      setState(() {
+        isLoading = true;
+      });
+
+      try {
+        await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: _emailController.text,
+          password: _passwordController.text,
+        );
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const MainScreen()),
+        );
+      } on FirebaseAuthException catch (e) {
+        String errorMessage = "Ocurrió un error. Intenta de nuevo.";
+
+        print("Firebase Auth Error Code: ${e.code}");
+        print("Firebase Auth Error Message: ${e.message}");
+
+        if (e.code == 'user-not-found') {
+          errorMessage = 'No existe usuario con este correo electrónico.';
+        } else if (e.code == 'wrong-password') {
+          errorMessage = 'Contraseña incorrecta.';
+        } else if (e.code == 'invalid-email') {
+          errorMessage = 'El correo electrónico no es válido.';
+        } else if (e.code == 'user-disabled') {
+          errorMessage = 'Este usuario ha sido deshabilitado.';
+        } else {
+          errorMessage = 'Error: ${e.message}';
+        }
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Error de inicio de sesión'),
+            content: Text(errorMessage),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+        );
+      } finally {
+        if (mounted) {
+          setState(() {
+            isLoading = false;
+          });
+        }
+      }
     }
   }
 
@@ -116,19 +167,6 @@ class _LoginScreenState extends State<LoginScreen>
                           if (value == null || value.isEmpty) {
                             return 'Por favor ingresa una contraseña';
                           }
-                          if (value.length < 8) {
-                            return 'La contraseña debe tener al menos 8 caracteres';
-                          }
-                          if (!value.contains(RegExp(r'[A-Z]'))) {
-                            return 'La contraseña debe contener al menos una letra mayúscula';
-                          }
-                          if (!value.contains(RegExp(r'[0-9]'))) {
-                            return 'La contraseña debe contener al menos un número';
-                          }
-                          if (!value.contains(RegExp(r'[^a-zA-Z0-9]'))) {
-                            return 'La contraseña debe contener al menos un símbolo';
-                          }
-
                           return null;
                         },
                       ),
@@ -150,7 +188,7 @@ class _LoginScreenState extends State<LoginScreen>
                       ),
                       const SizedBox(height: 30),
                       ElevatedButton(
-                        onPressed: _login,
+                        onPressed: isLoading ? null : _login,
                         style: ElevatedButton.styleFrom(
                           foregroundColor: Colors.blue.shade700,
                           backgroundColor: Colors.white,
@@ -160,9 +198,11 @@ class _LoginScreenState extends State<LoginScreen>
                             borderRadius: BorderRadius.circular(30),
                           ),
                         ),
-                        child: const Text('Iniciar Sesión',
-                            style: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold)),
+                        child: isLoading
+                            ? const CircularProgressIndicator()
+                            : const Text('Iniciar Sesión',
+                                style: TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.bold)),
                       ),
                       const SizedBox(height: 20),
                       const Row(
