@@ -1,106 +1,105 @@
- import 'package:cloud_firestore/cloud_firestore.dart';
-  import 'package:feast_fit/screens/screens.dart';
-  import 'package:feast_fit/widgets/widgets.dart';
-  import 'package:firebase_auth/firebase_auth.dart';
-  import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:feast_fit/screens/screens.dart';
+import 'package:feast_fit/widgets/widgets.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 
-  class RegisterScreen extends StatefulWidget {
-    const RegisterScreen({super.key});
+class RegisterScreen extends StatefulWidget {
+  const RegisterScreen({super.key});
 
-    @override
-    _RegisterScreenState createState() => _RegisterScreenState();
+  @override
+  _RegisterScreenState createState() => _RegisterScreenState();
+}
+
+class _RegisterScreenState extends State<RegisterScreen>
+    with SingleTickerProviderStateMixin {
+  final _formKey = GlobalKey<FormState>();
+  bool _isPasswordVisible = false;
+  final _nameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  late AnimationController _animationController;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 8),
+    )..repeat(reverse: true);
   }
-
-  class _RegisterScreenState extends State<RegisterScreen>
-      with SingleTickerProviderStateMixin {
-    final _formKey = GlobalKey<FormState>();
-    bool _isPasswordVisible = false;
-    final _nameController = TextEditingController();
-    final _emailController = TextEditingController();
-    final _passwordController = TextEditingController();
-    late AnimationController _animationController;
-
-    @override
-    void initState() {
-      super.initState();
-      _animationController = AnimationController(
-        vsync: this,
-        duration: const Duration(seconds: 8),
-      )..repeat(reverse: true);
-    }
 
   bool isLoading = false;
 
-void _register() async {
-  if (_formKey.currentState!.validate()) {
-    setState(() {
-      isLoading = true;
-    });
-
-    try {
-      UserCredential userCredential = await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(
-            email: _emailController.text,
-            password: _passwordController.text,
-          );
-
-      await FirebaseFirestore.instance.collection('users').doc(userCredential.user?.uid).set({
-        'name': _nameController.text,
-        'email': _emailController.text,
-      });
-
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const MainScreen()),
-      );
-    } on FirebaseAuthException catch (e) {
-  String errorMessage = "Ocurrió un error. Intenta de nuevo.";
-
-  print("Firebase Auth Error Code: ${e.code}");
-  print("Firebase Auth Error Message: ${e.message}");
-  print("Firebase Auth Error StackTrace: ${e.stackTrace}");
-
-  if (e.code == 'weak-password') {
-    errorMessage = 'La contraseña es muy débil.';
-  } else if (e.code == 'email-already-in-use') {
-    errorMessage = 'Este correo electrónico ya está en uso.';
-  } else if (e.code == 'invalid-email') {
-    errorMessage = 'El correo electrónico no es válido.';
-  } else {
-    errorMessage = 'Error desconocido: ${e.message}';
-  }
-
-  showDialog(
-    context: context,
-    builder: (context) => AlertDialog(
-      title: const Text('Error'),
-      content: Text(errorMessage),
-      actions: [
-        TextButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          child: const Text('OK'),
-        ),
-      ],
-    ),
-  );
-    } finally {
+  void _register() async {
+    if (_formKey.currentState!.validate()) {
       setState(() {
-        isLoading = false; 
+        isLoading = true;
       });
+
+      try {
+        UserCredential userCredential = await FirebaseAuth.instance
+            .createUserWithEmailAndPassword(
+          email: _emailController.text,
+          password: _passwordController.text,
+        );
+
+        await FirebaseFirestore.instance.collection('users').doc(userCredential.user?.uid).set({
+          'name': _nameController.text,
+          'email': _emailController.text,
+        });
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const MainScreen()),
+        );
+      } on FirebaseAuthException catch (e) {
+        String errorMessage = "Ocurrió un error. Intenta de nuevo.";
+
+        print("Firebase Auth Error Code: ${e.code}");
+        print("Firebase Auth Error Message: ${e.message}");
+        print("Firebase Auth Error StackTrace: ${e.stackTrace}");
+
+        if (e.code == 'weak-password') {
+          errorMessage = 'La contraseña es muy débil.';
+        } else if (e.code == 'email-already-in-use') {
+          errorMessage = 'Este correo electrónico ya está en uso.';
+        } else if (e.code == 'invalid-email') {
+          errorMessage = 'El correo electrónico no es válido.';
+        } else {
+          errorMessage = 'Error desconocido: ${e.message}';
+        }
+
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Error'),
+            content: Text(errorMessage),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+        );
+      } finally {
+        setState(() {
+          isLoading = false;
+        });
+      }
     }
   }
-}
+  void _signUpWithGoogle() async {
+    // Implementación para registrarse con Google
+  }
 
-
-    void _signUpWithGoogle() async {
-    }
-
-    @override
-    Widget build(BuildContext context) {
-      return Scaffold(
-          body: AnimatedGradientBackground(
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: AnimatedGradientBackground(
         child: SafeArea(
           child: Center(
             child: SingleChildScrollView(
@@ -159,9 +158,8 @@ void _register() async {
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Por favor ingresa tu correo';
-                            }
-                            if (!value.contains('@')) {
-                              return 'Ingresa un correo válido';
+                            } else if (!RegExp(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$").hasMatch(value)) {
+                              return 'Por favor ingresa un correo electrónico válido';
                             }
                             return null;
                           },
@@ -230,7 +228,7 @@ void _register() async {
                           child: isLoading
                             ? const CircularProgressIndicator()
                             : const Text('Registrarse', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                          ),
+                        ),
                         const SizedBox(height: 20),
                         const Row(
                           children: [
@@ -305,6 +303,7 @@ void _register() async {
             ),
           ),
         ),
-      ));
-    }
-      }
+      ),
+    );
+  }
+}
