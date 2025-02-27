@@ -95,6 +95,7 @@ class _ChartScreenState extends State<ChartScreen> {
     if (user != null) {
       await _firestore.collection('users').doc(user.uid).update({
         'chartData': chartData.map((spot) => {'x': spot.x, 'y': spot.y}).toList(),
+        'weight': value.toString(),
       });
     }
 
