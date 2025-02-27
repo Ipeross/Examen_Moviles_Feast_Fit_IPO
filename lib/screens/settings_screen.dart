@@ -68,6 +68,18 @@ class SettingsScreen extends StatelessWidget {
               );
             },
           ),
+          SettingsList(
+            icon: Icons.logout_outlined, 
+            title: 'Logout',
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const LoginScreen(), 
+                ),
+              );
+            },
+          ),
         ],
       ),
     );

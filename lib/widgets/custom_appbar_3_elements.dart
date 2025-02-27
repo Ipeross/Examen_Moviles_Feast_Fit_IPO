@@ -34,6 +34,12 @@ class CustomAppBar3 extends StatelessWidget implements PreferredSizeWidget {
             } else if (value == 'toggle_theme') {
               themeProvider.toggleTheme();
             }
+            else if (value == 'login_out') {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const LoginScreen()),
+              );
+            }
           },
           itemBuilder: (BuildContext context) {
             return [
@@ -56,6 +62,13 @@ class CustomAppBar3 extends StatelessWidget implements PreferredSizeWidget {
                 child: ListTile(
                   leading: Icon(Icons.home),
                   title: Text('Home'),
+                ),
+              ),
+              const PopupMenuItem<String>(
+                value: 'login_out',
+                child: ListTile(
+                  leading: Icon(Icons.logout_outlined),
+                  title: Text('Logout'),
                 ),
               ),
             ];
