@@ -37,7 +37,6 @@ class _ContactScreenState extends State<ContactScreen> {
               ),
               const SizedBox(height: 24),
 
-              // Formulario de contacto
               const Text(
                 'Nombre',
                 style: TextStyle(
