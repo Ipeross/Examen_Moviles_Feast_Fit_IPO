@@ -11,13 +11,15 @@ class RegisterScreen extends StatefulWidget {
   _RegisterScreenState createState() => _RegisterScreenState();
 }
 
-class _RegisterScreenState extends State<RegisterScreen>
-    with SingleTickerProviderStateMixin {
+class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
   bool _isPasswordVisible = false;
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _weightController = TextEditingController();
+  final _heightController = TextEditingController();
+  String _selectedSportActivity = 'Ninguno'; // Valor predeterminado
   late AnimationController _animationController;
 
   @override
@@ -47,6 +49,9 @@ class _RegisterScreenState extends State<RegisterScreen>
         await FirebaseFirestore.instance.collection('users').doc(userCredential.user?.uid).set({
           'name': _nameController.text,
           'email': _emailController.text,
+          'weight': _weightController.text,
+          'height': _heightController.text,
+          'sportActivity': _selectedSportActivity,
         });
 
         Navigator.pushReplacement(
@@ -55,7 +60,6 @@ class _RegisterScreenState extends State<RegisterScreen>
         );
       } on FirebaseAuthException catch (e) {
         String errorMessage = "Ocurrió un error. Intenta de nuevo.";
-
         print("Firebase Auth Error Code: ${e.code}");
         print("Firebase Auth Error Message: ${e.message}");
         print("Firebase Auth Error StackTrace: ${e.stackTrace}");
@@ -104,8 +108,7 @@ class _RegisterScreenState extends State<RegisterScreen>
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.person_add_outlined,
-                      size: 80, color: Colors.white),
+                  const Icon(Icons.person_add_outlined, size: 80, color: Colors.white),
                   const SizedBox(height: 30),
                   const Text('Crear Cuenta',
                       style: TextStyle(
@@ -121,8 +124,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                           controller: _nameController,
                           decoration: InputDecoration(
                             hintText: 'Nombre completo',
-                            prefixIcon:
-                                const Icon(Icons.person, color: Colors.white70),
+                            prefixIcon: const Icon(Icons.person, color: Colors.white70),
                             filled: true,
                             fillColor: Colors.white24,
                             border: OutlineInputBorder(
@@ -141,8 +143,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                           controller: _emailController,
                           decoration: InputDecoration(
                             hintText: 'Correo electrónico',
-                            prefixIcon:
-                                const Icon(Icons.email, color: Colors.white70),
+                            prefixIcon: const Icon(Icons.email, color: Colors.white70),
                             filled: true,
                             fillColor: Colors.white24,
                             border: OutlineInputBorder(
@@ -167,8 +168,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                           obscureText: !_isPasswordVisible,
                           decoration: InputDecoration(
                             hintText: 'Contraseña',
-                            prefixIcon:
-                                const Icon(Icons.lock, color: Colors.white70),
+                            prefixIcon: const Icon(Icons.lock, color: Colors.white70),
                             suffixIcon: IconButton(
                               icon: Icon(
                                 _isPasswordVisible
@@ -204,27 +204,96 @@ class _RegisterScreenState extends State<RegisterScreen>
                             if (!value.contains(RegExp(r'[0-9]'))) {
                               return 'La contraseña debe contener al menos un número';
                             }
-                            if (!value
-                                .contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
+                            if (!value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
                               return 'La contraseña debe contener al menos un signo de puntuación';
                             }
                             return null;
                           },
                         ),
                         const SizedBox(height: 20),
+                        TextFormField(
+                          controller: _weightController,
+                          decoration: InputDecoration(
+                            hintText: 'Peso (kg)',
+                            prefixIcon: const Icon(Icons.scale, color: Colors.white70),
+                            filled: true,
+                            fillColor: Colors.white24,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(30),
+                              borderSide: BorderSide.none,
+                            ),
+                            hintStyle: const TextStyle(color: Colors.white70),
+                          ),
+                          style: const TextStyle(color: Colors.white),
+                          validator: (value) => value == null || value.isEmpty
+                              ? 'Por favor ingresa tu peso'
+                              : null,
+                        ),
+                        const SizedBox(height: 20),
+                        TextFormField(
+                          controller: _heightController,
+                          decoration: InputDecoration(
+                            hintText: 'Altura (cm)',
+                            prefixIcon: const Icon(Icons.height, color: Colors.white70),
+                            filled: true,
+                            fillColor: Colors.white24,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(30),
+                              borderSide: BorderSide.none,
+                            ),
+                            hintStyle: const TextStyle(color: Colors.white70),
+                          ),
+                          style: const TextStyle(color: Colors.white),
+                          validator: (value) => value == null || value.isEmpty
+                              ? 'Por favor ingresa tu altura'
+                              : null,
+                        ),
+                        const SizedBox(height: 20),
+                        DropdownButtonFormField<String>(
+                          decoration: InputDecoration(
+                            hintText: 'Actividad Deportiva',
+                            prefixIcon: const Icon(Icons.sports, color: Colors.white70),
+                            filled: true,
+                            fillColor: Colors.white24,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(30),
+                              borderSide: BorderSide.none,
+                            ),
+                            hintStyle: const TextStyle(color: Colors.white70),
+                          ),
+                          value: _selectedSportActivity,
+                          items: [
+                            'Ninguno',
+                            '1-2 veces por semana',
+                            '3-4 veces por semana',
+                            '5 o más veces por semana'
+                          ].map((label) => DropdownMenuItem(
+                            value: label,
+                            child: Text(label, style: const TextStyle(color: Colors.white)),
+                          )).toList(),
+                          onChanged: (value) {
+                            setState(() {
+                              _selectedSportActivity = value!;
+                            });
+                          },
+                          validator: (value) => value == null || value.isEmpty
+                              ? 'Por favor selecciona tu actividad deportiva'
+                              : null,
+                        ),
+                        const SizedBox(height: 20),
                         ElevatedButton(
                           onPressed: isLoading ? null : _register,
                           style: ElevatedButton.styleFrom(
-                              foregroundColor: Colors.blue.shade700,
-                              backgroundColor: Colors.white,
-                              padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-                              shape: RoundedRectangleBorder(
+                            foregroundColor: Colors.blue.shade700,
+                            backgroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+                            shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(30),
                             ),
                           ),
                           child: isLoading
-                            ? const CircularProgressIndicator()
-                            : const Text('Registrarse', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                              ? const CircularProgressIndicator()
+                              : const Text('Registrarse', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                         ),
                         const SizedBox(height: 20),
                         Row(
@@ -252,13 +321,16 @@ class _RegisterScreenState extends State<RegisterScreen>
       ),
     );
   }
-  
+
   @override
   void dispose() {
     _nameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
+    _weightController.dispose();
+    _heightController.dispose();
     _animationController.dispose();
     super.dispose();
   }
 }
+
