@@ -3,6 +3,8 @@ import 'package:feast_fit/screens/screens.dart';
 import 'package:feast_fit/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -88,7 +90,78 @@ class _LoginScreenState extends State<LoginScreen>
   }
 
   void _signInWithGoogle() async {
-    // Aquí irá la integración con Firebase Auth, toda la mandanga
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      // Configurar Google Sign In
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+      
+      // Si el usuario cancela el inicio de sesión
+      if (googleUser == null) {
+        setState(() {
+          isLoading = false;
+        });
+        return;
+      }
+      
+      // Obtener detalles de autenticación del request
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      
+      // Crear credencial para Firebase
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+      
+      // Iniciar sesión con Firebase usando la credencial de Google
+      final UserCredential userCredential = 
+          await FirebaseAuth.instance.signInWithCredential(credential);
+      
+      // Obtener el usuario actual
+      final User? user = userCredential.user;
+      
+      if (user != null) {
+        // Guardar o actualizar la información del usuario en Firestore
+        await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
+          'email': user.email,
+          'displayName': user.displayName,
+          'photoURL': user.photoURL,
+          'lastLogin': FieldValue.serverTimestamp(),
+          'provider': 'google',
+        }, SetOptions(merge: true));
+        
+        // Navegar a la pantalla principal
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const MainScreen()),
+        );
+      }
+    } catch (e) {
+      print('Error durante el inicio de sesión con Google: $e');
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Error de inicio de sesión'),
+          content: Text('No se pudo iniciar sesión con Google: ${e.toString()}'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
+    }
   }
 
   @override
@@ -232,7 +305,7 @@ class _LoginScreenState extends State<LoginScreen>
                       ),
                       const SizedBox(height: 20),
                       OutlinedButton.icon(
-                        onPressed: _signInWithGoogle,
+                        onPressed: isLoading ? null : _signInWithGoogle,
                         icon: Image.asset(
                           'assets/google_logo.png',
                           height: 24,
