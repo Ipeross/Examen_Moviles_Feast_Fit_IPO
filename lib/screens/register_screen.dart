@@ -269,7 +269,7 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
                             '5 o más veces por semana'
                           ].map((label) => DropdownMenuItem(
                             value: label,
-                            child: Text(label, style: const TextStyle(color: Colors.white)),
+                            child: Text(label, style: const TextStyle(color: Color.fromARGB(255, 255, 255, 255)))
                           )).toList(),
                           onChanged: (value) {
                             setState(() {
@@ -279,6 +279,7 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
                           validator: (value) => value == null || value.isEmpty
                               ? 'Por favor selecciona tu actividad deportiva'
                               : null,
+                                dropdownColor: const Color.fromARGB(255, 119, 112, 112),
                         ),
                         const SizedBox(height: 20),
                         ElevatedButton(
