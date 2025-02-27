@@ -225,9 +225,19 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
                             hintStyle: const TextStyle(color: Colors.white70),
                           ),
                           style: const TextStyle(color: Colors.white),
-                          validator: (value) => value == null || value.isEmpty
-                              ? 'Por favor ingresa tu peso'
-                              : null,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Por favor ingresa tu peso';
+                            }
+                            double? peso = double.tryParse(value);
+                            if (peso == null) {
+                              return 'Por favor ingresa un valor válido para el peso';
+                            }
+                            if (peso < 25 || peso > 300) {
+                              return 'El peso debe estar entre 25 kg y 300 kg';
+                            }
+                            return null;
+                          },
                         ),
                         const SizedBox(height: 20),
                         TextFormField(
@@ -244,9 +254,19 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
                             hintStyle: const TextStyle(color: Colors.white70),
                           ),
                           style: const TextStyle(color: Colors.white),
-                          validator: (value) => value == null || value.isEmpty
-                              ? 'Por favor ingresa tu altura'
-                              : null,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Por favor ingresa tu altura';
+                            }
+                            double? altura = double.tryParse(value);
+                            if (altura == null) {
+                              return 'Por favor ingresa un valor válido para la altura';
+                            }
+                            if (altura < 100 || altura > 250) {
+                              return 'La altura debe estar entre 100 cm y 250 cm';
+                            }
+                            return null;
+                          },
                         ),
                         const SizedBox(height: 20),
                         DropdownButtonFormField<String>(
@@ -334,4 +354,3 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
     super.dispose();
   }
 }
-
