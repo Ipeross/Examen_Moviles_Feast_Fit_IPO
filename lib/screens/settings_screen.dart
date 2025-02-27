@@ -39,14 +39,7 @@ class SettingsScreen extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const ProfileScreen(
-                    userData: {
-                      'name': 'Juan Pérez',
-                      'email': 'juan.perez@example.com',
-                      'phone': '123456789',
-                      'gender': 'Masculino',
-                    },
-                  ),
+                  builder: (context) => const ProfileScreen(),
                 ),
               );
             },
@@ -63,15 +56,14 @@ class SettingsScreen extends StatelessWidget {
               );
             },
           ),
-          // Nuevo campo: Contacto
           SettingsList(
-            icon: Icons.contact_mail, // Icono para contacto
+            icon: Icons.contact_mail, 
             title: 'Contacto',
             onTap: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const ContactScreen(), // Navega a ContactScreen
+                  builder: (context) => const ContactScreen(), 
                 ),
               );
             },
