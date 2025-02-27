@@ -19,8 +19,8 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
   final _passwordController = TextEditingController();
   final _weightController = TextEditingController();
   final _heightController = TextEditingController();
-  String _selectedSportActivity = 'Ninguno'; // Valor predeterminado
-  String _userRole = 'Usuario'; // Valor predeterminado para el rol
+  String _selectedSportActivity = 'Ninguno'; 
+  String _userRole = 'Usuario';
   late AnimationController _animationController;
 
   @override
@@ -54,6 +54,7 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
           'height': _heightController.text,
           'sportActivity': _selectedSportActivity,
           'role': _userRole,
+          'chartData': [],
         });
 
         Navigator.pushReplacement(
