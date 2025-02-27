@@ -12,7 +12,7 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProviderStateMixin {
-  final _formKey = GlobalKey<FormState>();
+    final _formKey = GlobalKey<FormState>();
   bool _isPasswordVisible = false;
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
@@ -20,6 +20,7 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
   final _weightController = TextEditingController();
   final _heightController = TextEditingController();
   String _selectedSportActivity = 'Ninguno'; // Valor predeterminado
+  String _userRole = 'Usuario'; // Valor predeterminado para el rol
   late AnimationController _animationController;
 
   @override
@@ -52,6 +53,7 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
           'weight': _weightController.text,
           'height': _heightController.text,
           'sportActivity': _selectedSportActivity,
+          'role': _userRole,
         });
 
         Navigator.pushReplacement(
@@ -299,7 +301,36 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
                           validator: (value) => value == null || value.isEmpty
                               ? 'Por favor selecciona tu actividad deportiva'
                               : null,
-                                dropdownColor: const Color.fromARGB(255, 119, 112, 112),
+                              dropdownColor: const Color.fromARGB(255, 119, 112, 112),
+                        ),
+                        const SizedBox(height: 20),
+                        DropdownButtonFormField<String>(
+                          decoration: InputDecoration(
+                            hintText: 'Rol',
+                            prefixIcon: const Icon(Icons.account_circle, color: Colors.white70),
+                            filled: true,
+                            fillColor: Colors.white24,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(30),
+                              borderSide: BorderSide.none,
+                            ),
+                            hintStyle: const TextStyle(color: Colors.white70),
+                          ),
+                          value: _userRole,
+                          items: ['Usuario', 'Administrador'].map((role) {
+                            return DropdownMenuItem(
+                              value: role,
+                              child: Text(role, style: const TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
+                              ),
+                              
+                            );
+                          }).toList(),
+                          onChanged: (value) {
+                            setState(() {
+                              _userRole = value!;
+                            });
+                          },
+                          dropdownColor: const Color.fromARGB(255, 119, 112, 112),
                         ),
                         const SizedBox(height: 20),
                         ElevatedButton(
@@ -320,14 +351,10 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Text('¿Ya tienes una cuenta?',
-                                style: TextStyle(color: Colors.white70)),
+                            const Text('¿Ya tienes una cuenta?', style: TextStyle(color: Colors.white70)),
                             TextButton(
                               onPressed: () => Navigator.pop(context),
-                              child: const Text('Inicia Sesión',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold)),
+                              child: const Text('Inicia Sesión', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
                             ),
                           ],
                         ),
