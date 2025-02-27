@@ -126,7 +126,7 @@ class FoodScreenAdmin extends StatelessWidget {
               fit: StackFit.expand,
               children: [
                 Image.asset(
-                  'assets/carbonara.jpg',
+                  'assets/takoyaki.jpg',
                   fit: BoxFit.cover,
                 ),
                 Container(
@@ -188,22 +188,22 @@ class FoodScreenAdmin extends StatelessWidget {
                     children: [
                       foodItem(
                         context,
-                        'Pasta Carbonara',
-                        'assets/carbonara.jpg',
+                        'Takoyaki',
+                        'assets/takoyaki.jpg',
                         'Pasta con salsa cremosa, huevo, panceta y queso parmesano',
                         '650 calorías',
                       ),
                       foodItem(
                         context,
                         'Ensalada César',
-                        'assets/carbonara.jpg',
+                        'assets/takoyaki.jpg',
                         'Lechuga romana, crutones, pollo a la parrilla y aderezo césar',
                         '450 calorías',
                       ),
                       foodItem(
                         context,
                         'Salmón a la Parrilla',
-                        'assets/carbonara.jpg',
+                        'assets/takoyaki.jpg',
                         'Salmón fresco con verduras asadas y quinoa',
                         '550 calorías',
                       ),
