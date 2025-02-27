@@ -1,5 +1,7 @@
 import 'package:feast_fit/screens/screens.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:feast_fit/widgets/widgets.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class MainScreen extends StatelessWidget {
