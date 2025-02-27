@@ -8,7 +8,7 @@ class AboutUsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
 
     return Scaffold(
-      appBar: const CustomAppBar3(title: 'Información'),
+      appBar: const CustomAppBar3(title: 'Información', actions: [],),
       body: ListView(
         padding: const EdgeInsets.all(16.0),
         children: const [

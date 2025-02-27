@@ -5,10 +5,12 @@ import 'package:provider/provider.dart';
 
 class CustomAppBar3 extends StatelessWidget implements PreferredSizeWidget {
   final String title;
+  final List<Widget> actions;
 
   const CustomAppBar3({
     super.key,
     required this.title,
+    this.actions = const [],
   });
 
   @override
@@ -19,6 +21,7 @@ class CustomAppBar3 extends StatelessWidget implements PreferredSizeWidget {
       automaticallyImplyLeading: false,
       title: Text(title),
       actions: [
+        ...actions,
         PopupMenuButton<String>(
           onSelected: (value) {
             if (value == 'settings') {

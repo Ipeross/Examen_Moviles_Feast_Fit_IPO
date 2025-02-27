@@ -21,7 +21,7 @@ class _ContactScreenState extends State<ContactScreen> {
     final themeProvider = Provider.of<ThemeProvider>(context);
 
     return Scaffold(
-      appBar: const CustomAppBar3(title: '¿Necesitas ayuda?'),
+      appBar: const CustomAppBar3(title: '¿Necesitas ayuda?', actions: [],),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Form(
