@@ -25,7 +25,7 @@ class MainScreen extends StatelessWidget {
 
     final data = doc.data();
     final bool isAdmin =
-        data != null && data.containsKey('admin') ? data['admin'] : false;
+        data != null && data.containsKey('isAdmin') ? data['isAdmin'] : false;
 
     print("isAdmin: $isAdmin"); // Debugging en consola y to el tema
 

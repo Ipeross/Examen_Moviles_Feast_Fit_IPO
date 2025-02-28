@@ -1,6 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:feast_fit/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:intl/intl.dart';
 
 class ChartScreenAdmin extends StatefulWidget {
   @override
@@ -17,8 +20,26 @@ class _ChartScreenAdminState extends State<ChartScreenAdmin> {
   ];
 
   List<FlSpot> chartData = [];
-
   final TextEditingController _controllerValue = TextEditingController();
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadChartData();
+  }
+
+  Future<void> _loadChartData() async {
+    User? user = _auth.currentUser;
+    if (user != null) {
+      final DocumentSnapshot snapshot = await _firestore.collection('users').doc(user.uid).get();
+      final List<dynamic> loadedData = snapshot.get('chartData') ?? [];
+      setState(() {
+        chartData = loadedData.map((data) => FlSpot(data['x'], data['y'])).toList();
+      });
+    }
+  }
 
   void toggleChartType() {
     setState(() {
@@ -26,7 +47,7 @@ class _ChartScreenAdminState extends State<ChartScreenAdmin> {
     });
   }
 
-  void addData() {
+  Future<void> addData() async {
     final double value = double.tryParse(_controllerValue.text) ?? 0;
 
     if (value <= 0) {
@@ -36,9 +57,47 @@ class _ChartScreenAdminState extends State<ChartScreenAdmin> {
       return;
     }
 
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+
+    int todayDataCount = chartData.where((spot) {
+      final spotDate = DateTime.fromMillisecondsSinceEpoch(spot.x.toInt());
+      return spotDate.year == today.year && spotDate.month == today.month && spotDate.day == today.day;
+    }).length;
+
+    if (todayDataCount >= 2) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Límite de datos alcanzado'),
+            content: Text('No se puede añadir más de dos datos al día.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+      return;
+    }
+
+    final FlSpot newSpot = FlSpot(now.millisecondsSinceEpoch.toDouble(), value);
     setState(() {
-      chartData.add(FlSpot(chartData.length.toDouble(), value));
+      chartData.add(newSpot);
     });
+
+    User? user = _auth.currentUser;
+    if (user != null) {
+      await _firestore.collection('users').doc(user.uid).update({
+        'chartData': chartData.map((spot) => {'x': spot.x, 'y': spot.y}).toList(),
+        'weight': value.toString(),
+      });
+    }
 
     _controllerValue.clear();
   }

@@ -11,16 +11,17 @@ class RegisterScreen extends StatefulWidget {
   _RegisterScreenState createState() => _RegisterScreenState();
 }
 
-class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProviderStateMixin {
-    final _formKey = GlobalKey<FormState>();
+class _RegisterScreenState extends State<RegisterScreen>
+    with SingleTickerProviderStateMixin {
+  final _formKey = GlobalKey<FormState>();
   bool _isPasswordVisible = false;
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _weightController = TextEditingController();
   final _heightController = TextEditingController();
-  String _selectedSportActivity = 'Ninguno'; 
-  String _userRole = 'Usuario';
+  String _selectedSportActivity = 'Ninguno';
+  bool _isAdmin = false;
   late AnimationController _animationController;
 
   @override
@@ -41,19 +42,22 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
       });
 
       try {
-        UserCredential userCredential = await FirebaseAuth.instance
-            .createUserWithEmailAndPassword(
+        UserCredential userCredential =
+            await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: _emailController.text,
           password: _passwordController.text,
         );
 
-        await FirebaseFirestore.instance.collection('users').doc(userCredential.user?.uid).set({
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(userCredential.user?.uid)
+            .set({
           'name': _nameController.text,
           'email': _emailController.text,
           'weight': _weightController.text,
           'height': _heightController.text,
           'sportActivity': _selectedSportActivity,
-          'role': _userRole,
+          'isAdmin': _isAdmin,
           'chartData': [],
         });
 
@@ -111,7 +115,8 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.person_add_outlined, size: 80, color: Colors.white),
+                  const Icon(Icons.person_add_outlined,
+                      size: 80, color: Colors.white),
                   const SizedBox(height: 30),
                   const Text('Crear Cuenta',
                       style: TextStyle(
@@ -127,7 +132,8 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
                           controller: _nameController,
                           decoration: InputDecoration(
                             hintText: 'Nombre completo',
-                            prefixIcon: const Icon(Icons.person, color: Colors.white70),
+                            prefixIcon:
+                                const Icon(Icons.person, color: Colors.white70),
                             filled: true,
                             fillColor: Colors.white24,
                             border: OutlineInputBorder(
@@ -146,7 +152,8 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
                           controller: _emailController,
                           decoration: InputDecoration(
                             hintText: 'Correo electrónico',
-                            prefixIcon: const Icon(Icons.email, color: Colors.white70),
+                            prefixIcon:
+                                const Icon(Icons.email, color: Colors.white70),
                             filled: true,
                             fillColor: Colors.white24,
                             border: OutlineInputBorder(
@@ -159,7 +166,9 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Por favor ingresa tu correo';
-                            } else if (!RegExp(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$").hasMatch(value)) {
+                            } else if (!RegExp(
+                                    r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$")
+                                .hasMatch(value)) {
                               return 'Por favor ingresa un correo electrónico válido';
                             }
                             return null;
@@ -171,7 +180,8 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
                           obscureText: !_isPasswordVisible,
                           decoration: InputDecoration(
                             hintText: 'Contraseña',
-                            prefixIcon: const Icon(Icons.lock, color: Colors.white70),
+                            prefixIcon:
+                                const Icon(Icons.lock, color: Colors.white70),
                             suffixIcon: IconButton(
                               icon: Icon(
                                 _isPasswordVisible
@@ -207,7 +217,8 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
                             if (!value.contains(RegExp(r'[0-9]'))) {
                               return 'La contraseña debe contener al menos un número';
                             }
-                            if (!value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
+                            if (!value
+                                .contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
                               return 'La contraseña debe contener al menos un signo de puntuación';
                             }
                             return null;
@@ -218,7 +229,8 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
                           controller: _weightController,
                           decoration: InputDecoration(
                             hintText: 'Peso (kg)',
-                            prefixIcon: const Icon(Icons.scale, color: Colors.white70),
+                            prefixIcon:
+                                const Icon(Icons.scale, color: Colors.white70),
                             filled: true,
                             fillColor: Colors.white24,
                             border: OutlineInputBorder(
@@ -247,7 +259,8 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
                           controller: _heightController,
                           decoration: InputDecoration(
                             hintText: 'Altura (cm)',
-                            prefixIcon: const Icon(Icons.height, color: Colors.white70),
+                            prefixIcon:
+                                const Icon(Icons.height, color: Colors.white70),
                             filled: true,
                             fillColor: Colors.white24,
                             border: OutlineInputBorder(
@@ -275,7 +288,8 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
                         DropdownButtonFormField<String>(
                           decoration: InputDecoration(
                             hintText: 'Actividad Deportiva',
-                            prefixIcon: const Icon(Icons.sports, color: Colors.white70),
+                            prefixIcon:
+                                const Icon(Icons.sports, color: Colors.white70),
                             filled: true,
                             fillColor: Colors.white24,
                             border: OutlineInputBorder(
@@ -290,10 +304,14 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
                             '1-2 veces por semana',
                             '3-4 veces por semana',
                             '5 o más veces por semana'
-                          ].map((label) => DropdownMenuItem(
-                            value: label,
-                            child: Text(label, style: const TextStyle(color: Color.fromARGB(255, 255, 255, 255)))
-                          )).toList(),
+                          ]
+                              .map((label) => DropdownMenuItem(
+                                  value: label,
+                                  child: Text(label,
+                                      style: const TextStyle(
+                                          color: Color.fromARGB(
+                                              255, 255, 255, 255)))))
+                              .toList(),
                           onChanged: (value) {
                             setState(() {
                               _selectedSportActivity = value!;
@@ -302,13 +320,15 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
                           validator: (value) => value == null || value.isEmpty
                               ? 'Por favor selecciona tu actividad deportiva'
                               : null,
-                              dropdownColor: const Color.fromARGB(255, 119, 112, 112),
+                          dropdownColor:
+                              const Color.fromARGB(255, 119, 112, 112),
                         ),
                         const SizedBox(height: 20),
-                        DropdownButtonFormField<String>(
+                        DropdownButtonFormField<bool>(
                           decoration: InputDecoration(
                             hintText: 'Rol',
-                            prefixIcon: const Icon(Icons.account_circle, color: Colors.white70),
+                            prefixIcon: const Icon(Icons.account_circle,
+                                color: Colors.white70),
                             filled: true,
                             fillColor: Colors.white24,
                             border: OutlineInputBorder(
@@ -317,21 +337,26 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
                             ),
                             hintStyle: const TextStyle(color: Colors.white70),
                           ),
-                          value: _userRole,
-                          items: ['Usuario', 'Administrador'].map((role) {
-                            return DropdownMenuItem(
-                              value: role,
-                              child: Text(role, style: const TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
-                              ),
-                              
-                            );
-                          }).toList(),
+                          value: _isAdmin,
+                          items: const [
+                            DropdownMenuItem(
+                              value: false,
+                              child: Text("Usuario",
+                                  style: TextStyle(color: Colors.white)),
+                            ),
+                            DropdownMenuItem(
+                              value: true,
+                              child: Text("Administrador",
+                                  style: TextStyle(color: Colors.white)),
+                            ),
+                          ],
                           onChanged: (value) {
                             setState(() {
-                              _userRole = value!;
+                              _isAdmin = value!;
                             });
                           },
-                          dropdownColor: const Color.fromARGB(255, 119, 112, 112),
+                          dropdownColor:
+                              const Color.fromARGB(255, 119, 112, 112),
                         ),
                         const SizedBox(height: 20),
                         ElevatedButton(
@@ -339,23 +364,31 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
                           style: ElevatedButton.styleFrom(
                             foregroundColor: Colors.blue.shade700,
                             backgroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 50, vertical: 15),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(30),
                             ),
                           ),
                           child: isLoading
                               ? const CircularProgressIndicator()
-                              : const Text('Registrarse', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                              : const Text('Registrarse',
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold)),
                         ),
                         const SizedBox(height: 20),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Text('¿Ya tienes una cuenta?', style: TextStyle(color: Colors.white70)),
+                            const Text('¿Ya tienes una cuenta?',
+                                style: TextStyle(color: Colors.white70)),
                             TextButton(
                               onPressed: () => Navigator.pop(context),
-                              child: const Text('Inicia Sesión', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                              child: const Text('Inicia Sesión',
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold)),
                             ),
                           ],
                         ),
