@@ -59,6 +59,7 @@ class _RegisterScreenState extends State<RegisterScreen>
           'sportActivity': _selectedSportActivity,
           'isAdmin': _isAdmin,
           'chartData': [],
+          'meals': {}
         });
 
         Navigator.pushReplacement(

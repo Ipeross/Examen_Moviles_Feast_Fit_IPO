@@ -33,11 +33,16 @@ class _ChartScreenAdminState extends State<ChartScreenAdmin> {
   Future<void> _loadChartData() async {
     User? user = _auth.currentUser;
     if (user != null) {
-      final DocumentSnapshot snapshot = await _firestore.collection('users').doc(user.uid).get();
+      final DocumentSnapshot snapshot =
+          await _firestore.collection('users').doc(user.uid).get();
       final List<dynamic> loadedData = snapshot.get('chartData') ?? [];
-      setState(() {
-        chartData = loadedData.map((data) => FlSpot(data['x'], data['y'])).toList();
-      });
+
+      if (mounted) {
+        setState(() {
+          chartData =
+              loadedData.map((data) => FlSpot(data['x'], data['y'])).toList();
+        });
+      }
     }
   }
 
@@ -62,7 +67,9 @@ class _ChartScreenAdminState extends State<ChartScreenAdmin> {
 
     int todayDataCount = chartData.where((spot) {
       final spotDate = DateTime.fromMillisecondsSinceEpoch(spot.x.toInt());
-      return spotDate.year == today.year && spotDate.month == today.month && spotDate.day == today.day;
+      return spotDate.year == today.year &&
+          spotDate.month == today.month &&
+          spotDate.day == today.day;
     }).length;
 
     if (todayDataCount >= 2) {
@@ -94,7 +101,8 @@ class _ChartScreenAdminState extends State<ChartScreenAdmin> {
     User? user = _auth.currentUser;
     if (user != null) {
       await _firestore.collection('users').doc(user.uid).update({
-        'chartData': chartData.map((spot) => {'x': spot.x, 'y': spot.y}).toList(),
+        'chartData':
+            chartData.map((spot) => {'x': spot.x, 'y': spot.y}).toList(),
         'weight': value.toString(),
       });
     }
