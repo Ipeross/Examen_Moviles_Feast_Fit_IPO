@@ -28,15 +28,19 @@ class _FoodScreenAdminState extends State<FoodScreenAdmin> {
 
   void addFoodToUser(String day, String mealType, String food) async {
     if (selectedUserId != null) {
-      final userRef = FirebaseFirestore.instance.collection('users').doc(selectedUserId);
+      final userRef =
+          FirebaseFirestore.instance.collection('users').doc(selectedUserId);
 
-      await userRef.set({
-        "meals": {
-          day: {
-            mealType: FieldValue.arrayUnion([food])
-          }
-        }
-      }, SetOptions(merge: true)); // merge: true evita sobrescribir datos existentes
+      await userRef.set(
+          {
+            "meals": {
+              day: {
+                mealType: FieldValue.arrayUnion([food])
+              }
+            }
+          },
+          SetOptions(
+              merge: true)); // merge: true evita sobrescribir datos existentes
     }
   }
 
@@ -58,7 +62,8 @@ class _FoodScreenAdminState extends State<FoodScreenAdmin> {
                   });
                 },
                 items: ["Desayuno", "Almuerzo", "Snack", "Cena"]
-                    .map((type) => DropdownMenuItem(value: type, child: Text(type)))
+                    .map((type) =>
+                        DropdownMenuItem(value: type, child: Text(type)))
                     .toList(),
               ),
               for (String food in ["Pizza", "Ensalada", "Pasta", "Pollo"])
@@ -78,9 +83,9 @@ class _FoodScreenAdminState extends State<FoodScreenAdmin> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text("Administrar Dietas")),
-      body: Column(
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
         children: [
           StreamBuilder(
             stream: FirebaseFirestore.instance
@@ -107,47 +112,64 @@ class _FoodScreenAdminState extends State<FoodScreenAdmin> {
               );
             },
           ),
-          
+          const SizedBox(height: 10),
           if (selectedUserId != null)
             Expanded(
               child: ListView.builder(
                 itemCount: daysOfWeek.length,
                 itemBuilder: (context, index) {
                   final day = daysOfWeek[index];
-                  return ExpansionTile(
-                    title: Text(day),
-                    children: [
-                      StreamBuilder(
-                        stream: FirebaseFirestore.instance
-                            .collection('users')
-                            .doc(selectedUserId)
-                            .snapshots(),
-                        builder: (context, snapshot) {
-                          if (!snapshot.hasData) return const CircularProgressIndicator();
-                          final userData = snapshot.data!.data();
-                          final meals = userData?['meals'] ?? {};
+                  return Card(
+                    elevation: 3,
+                    margin: const EdgeInsets.symmetric(vertical: 8),
+                    child: ExpansionTile(
+                      title: Text(day, style: const TextStyle(fontWeight: FontWeight.bold)),
+                      children: [
+                        StreamBuilder(
+                          stream: FirebaseFirestore.instance
+                              .collection('users')
+                              .doc(selectedUserId)
+                              .snapshots(),
+                          builder: (context, snapshot) {
+                            if (!snapshot.hasData)
+                              return const CircularProgressIndicator();
+                            final userData = snapshot.data!.data();
+                            final meals = userData?['meals'] ?? {};
 
-                          return Column(
-                            children: [
-                              for (String mealType in ["Desayuno", "Almuerzo", "Snack", "Cena"])
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(mealType.toUpperCase(), style: TextStyle(fontWeight: FontWeight.bold)),
-                                    if (meals[day] != null && meals[day][mealType] != null)
-                                      for (String meal in List<String>.from(meals[day][mealType]))
-                                        ListTile(title: Text(meal)),
-                                  ],
+                            return Column(
+                              children: [
+                                for (String mealType in [
+                                  "Desayuno",
+                                  "Almuerzo",
+                                  "Snack",
+                                  "Cena"
+                                ])
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(mealType.toUpperCase(),
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold)),
+                                      if (meals[day] != null &&
+                                          meals[day][mealType] != null)
+                                        for (String meal in List<String>.from(
+                                            meals[day][mealType]))
+                                          ListTile(title: Text(meal)),
+                                    ],
+                                  ),
+                                Center(
+                                  child: ElevatedButton(
+                                    onPressed: () => showFoodSelectionDialog(day),
+                                    child: const Text("Añadir Plato"),
+                                  ),
                                 ),
-                              ElevatedButton(
-                                onPressed: () => showFoodSelectionDialog(day),
-                                child: const Text("Añadir Plato"),
-                              ),
-                            ],
-                          );
-                        },
-                      ),
-                    ],
+                              ],
+                            );
+                          },
+                        ),
+                      ],
+                    ),
                   );
                 },
               ),
@@ -157,4 +179,3 @@ class _FoodScreenAdminState extends State<FoodScreenAdmin> {
     );
   }
 }
-
