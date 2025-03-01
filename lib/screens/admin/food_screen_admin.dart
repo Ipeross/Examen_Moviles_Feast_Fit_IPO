@@ -53,7 +53,7 @@ class _FoodScreenAdminState extends State<FoodScreenAdmin> {
             }
           },
           SetOptions(
-              merge: true)); // merge: true evita sobrescribir datos existentes
+              merge: true));
     }
   }
 
@@ -110,7 +110,6 @@ class _FoodScreenAdminState extends State<FoodScreenAdmin> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            // Campo de búsqueda para filtrar usuarios por correo
             TextField(
               controller: _searchController,
               decoration: InputDecoration(
@@ -127,7 +126,6 @@ class _FoodScreenAdminState extends State<FoodScreenAdmin> {
             ),
             const SizedBox(height: 16),
             
-            // Lista de usuarios (no administradores)
             Expanded(
               child: StreamBuilder<QuerySnapshot>(
                 stream: FirebaseFirestore.instance
@@ -150,11 +148,8 @@ class _FoodScreenAdminState extends State<FoodScreenAdmin> {
                       child: Text('No se encontraron usuarios con ese correo'),
                     );
                   }
-                  
-                  // Vista dividida: lista de usuarios a la izquierda, detalles a la derecha
                   return Row(
                     children: [
-                      // Lista de usuarios (1/3 del ancho)
                       Expanded(
                         flex: 1,
                         child: Card(
@@ -185,7 +180,6 @@ class _FoodScreenAdminState extends State<FoodScreenAdmin> {
                       
                       const SizedBox(width: 16),
                       
-                      // Detalles del plan alimenticio (2/3 del ancho)
                       Expanded(
                         flex: 2,
                         child: selectedUserId != null
@@ -213,7 +207,6 @@ class _FoodScreenAdminState extends State<FoodScreenAdmin> {
       elevation: 4,
       child: Column(
         children: [
-          // Información del usuario seleccionado
           StreamBuilder<DocumentSnapshot>(
             stream: FirebaseFirestore.instance
                 .collection('users')
@@ -265,13 +258,11 @@ class _FoodScreenAdminState extends State<FoodScreenAdmin> {
             },
           ),
           
-          // Plan alimenticio
           Expanded(
             child: ListView.builder(
               itemCount: daysOfWeek.length,
               itemBuilder: (context, index) {
                 final day = daysOfWeek[index];
-                // Formato más legible para la fecha
                 final dateComponents = day.split('-');
                 final formattedDay = '${dateComponents[2]}/${dateComponents[1]}/${dateComponents[0]}';
                 
@@ -326,7 +317,7 @@ class _FoodScreenAdminState extends State<FoodScreenAdmin> {
                                           trailing: IconButton(
                                             icon: const Icon(Icons.delete, color: Colors.red),
                                             onPressed: () async {
-                                              // Eliminar comida
+                                          
                                               await FirebaseFirestore.instance
                                                   .collection('users')
                                                   .doc(selectedUserId)
