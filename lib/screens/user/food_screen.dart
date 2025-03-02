@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import '../../models/food_data.dart';
 
 class FoodScreen extends StatefulWidget {
   const FoodScreen({super.key});
@@ -14,28 +15,13 @@ class FoodScreen extends StatefulWidget {
 
 class _FoodScreenState extends State<FoodScreen> {
   final List<String> _daysOfWeek = [];
-  final Map<String, String> _mealTypeImages = {
-    'Desayuno': 'assets/breakfast.jpg',
-    'Almuerzo': 'assets/lunch.jpg',
-    'Snack': 'assets/snack.jpg',
-    'Cena': 'assets/dinner.jpg',
-  };
-
-  final String _defaultFoodImage = 'assets/carbonara.jpg';
-  
-  final Map<String, String> _foodImages = {
-    'Pizza': 'https://www.laespanolaaceites.com/wp-content/uploads/2019/06/pizza-con-chorizo-jamon-y-queso-1080x671.jpg',
-    'Ensalada': 'https://imag.bonviveur.com/ensalada-de-lechuga-y-tomate-foto-cerca.jpg',
-    'Pasta': 'https://rosemarieskitchen.website/wp-content/uploads/2024/03/spaghetti-pending.jpg?w=1200',
-    'Pollo': 'https://www.hola.com/horizon/landscape/938b614912e1-adobestock434414763.jpg',
-  };
 
   @override
   void initState() {
     super.initState();
     _generateDaysOfWeek();
   }
-  
+
   void _generateDaysOfWeek() {
     final now = DateTime.now();
     _daysOfWeek.clear();
@@ -45,56 +31,42 @@ class _FoodScreenState extends State<FoodScreen> {
       _daysOfWeek.add(formattedDate);
     }
   }
-  
+
   String _formatDate(String isoDate) {
     final parts = isoDate.split('-');
     if (parts.length != 3) return isoDate;
-    
+
     try {
       final date = DateTime(
-        int.parse(parts[0]), 
-        int.parse(parts[1]), 
+        int.parse(parts[0]),
+        int.parse(parts[1]),
         int.parse(parts[2])
       );
-      
+
       const monthNames = [
         'ene.', 'feb.', 'mar.', 'abr.', 'may.', 'jun.',
         'jul.', 'ago.', 'sept.', 'oct.', 'nov.', 'dic.'
       ];
-      
+
       return "${date.day} ${monthNames[date.month - 1]} ${date.year}";
     } catch (e) {
       return isoDate;
     }
   }
-  
+
   String _getFoodImage(String foodName) {
-    return _foodImages[foodName] ?? _defaultFoodImage;
+    return foodImages[foodName] ?? defaultFoodImage;
   }
-  
+
   String _getMealTypeImage(String mealType) {
-    return _mealTypeImages[mealType] ?? _defaultFoodImage;
+    return mealTypeImages[mealType] ?? defaultFoodImage;
   }
-  
+
   String _estimateCalories(String foodName) {
-    final caloriesMap = {
-      'Pizza': '800 calorías',
-      'Ensalada': '350 calorías',
-      'Pasta': '650 calorías',
-      'Pollo': '500 calorías',
-    };
-    
     return caloriesMap[foodName] ?? '400 calorías';
   }
-  
+
   String _generateDescription(String foodName) {
-    final descriptions = {
-      'Pizza': 'Pizza con queso mozzarella, tomate y albahaca',
-      'Ensalada': 'Mezcla de verduras frescas con vinagreta',
-      'Pasta': 'Pasta con salsa cremosa, huevo, panceta y queso parmesano',
-      'Pollo': 'Pollo a la parrilla con especias y limón',
-    };
-    
     return descriptions[foodName] ?? 'Plato nutritivo preparado con ingredientes frescos';
   }
 
@@ -102,7 +74,7 @@ class _FoodScreenState extends State<FoodScreen> {
     final imageUrl = _getFoodImage(foodName);
     final calories = _estimateCalories(foodName);
     final description = _generateDescription(foodName);
-    
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: GestureDetector(
@@ -144,7 +116,7 @@ class _FoodScreenState extends State<FoodScreen> {
                 child: SizedBox(
                   width: 100,
                   height: double.infinity,
-                  child: _foodImages.containsKey(foodName)
+                  child: foodImages.containsKey(foodName)
                       ? CachedNetworkImage(
                           imageUrl: imageUrl,
                           fit: BoxFit.cover,
@@ -152,16 +124,16 @@ class _FoodScreenState extends State<FoodScreen> {
                             child: CircularProgressIndicator(),
                           ),
                           errorWidget: (context, url, error) => Image.asset(
-                            _defaultFoodImage,
+                            defaultFoodImage,
                             fit: BoxFit.cover,
                           ),
                         )
                       : Image.asset(
-                          _defaultFoodImage,
+                          defaultFoodImage,
                           fit: BoxFit.cover,
                           errorBuilder: (context, error, stackTrace) {
                             return Image.asset(
-                              _defaultFoodImage,
+                              defaultFoodImage,
                               fit: BoxFit.cover,
                             );
                           },
@@ -240,12 +212,12 @@ class _FoodScreenState extends State<FoodScreen> {
       ),
     );
   }
-  
+
   Widget _buildMealTypeSection(String dayKey, String mealType, List<String> foods) {
     if (foods.isEmpty) {
       return const SizedBox.shrink();
     }
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -277,7 +249,7 @@ class _FoodScreenState extends State<FoodScreen> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
-          
+
           if (snapshot.hasError) {
             return Center(
               child: Column(
@@ -298,16 +270,16 @@ class _FoodScreenState extends State<FoodScreen> {
               ),
             );
           }
-          
+
           if (!snapshot.hasData || !snapshot.data!.exists) {
             return const Center(
               child: Text('No se encontró información de tu plan alimenticio'),
             );
           }
-          
+
           final userData = snapshot.data!.data() as Map<String, dynamic>;
           final meals = userData['meals'] as Map<String, dynamic>? ?? {};
-          
+
           return RefreshIndicator(
             onRefresh: () async {
               setState(() {});
@@ -371,7 +343,7 @@ class _FoodScreenState extends State<FoodScreen> {
                     itemBuilder: (context, index) {
                       final day = _daysOfWeek[index];
                       final formattedDay = _formatDate(day);
-                      
+
                       return Theme(
                         data: Theme.of(context).copyWith(
                           dividerColor: Colors.transparent,
@@ -420,4 +392,3 @@ class _FoodScreenState extends State<FoodScreen> {
     );
   }
 }
-
