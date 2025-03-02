@@ -14,6 +14,13 @@ class _FoodScreenAdminState extends State<FoodScreenAdmin> {
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = "";
 
+  final Map<String, List<String>> mealFoodRestrictions = {
+    'Desayuno': ['Ensalada'],
+    'Almuerzo': ['Pasta', 'Pollo'],
+    'Cena': ['Pizza', 'Pollo'],
+    'Snack': ['Ensalada', 'Pasta'],
+  };
+
   @override
   void initState() {
     super.initState();
@@ -59,7 +66,7 @@ class _FoodScreenAdminState extends State<FoodScreenAdmin> {
 
   void showFoodSelectionDialog(String day) {
     String selectedMealType = "Desayuno";
-    
+
     showDialog(
       context: context,
       builder: (context) {
@@ -82,7 +89,7 @@ class _FoodScreenAdminState extends State<FoodScreenAdmin> {
                             DropdownMenuItem(value: type, child: Text(type)))
                         .toList(),
                   ),
-                  for (String food in ["Pizza", "Ensalada", "Pasta", "Pollo"])
+                  for (String food in mealFoodRestrictions[selectedMealType] ?? [])
                     ListTile(
                       title: Text(food),
                       onTap: () {
@@ -125,7 +132,7 @@ class _FoodScreenAdminState extends State<FoodScreenAdmin> {
               ),
             ),
             const SizedBox(height: 16),
-            
+
             Expanded(
               child: StreamBuilder<QuerySnapshot>(
                 stream: FirebaseFirestore.instance
@@ -136,13 +143,13 @@ class _FoodScreenAdminState extends State<FoodScreenAdmin> {
                   if (!snapshot.hasData) {
                     return const Center(child: CircularProgressIndicator());
                   }
-                  
+
                   final users = snapshot.data!.docs.where((doc) {
                     final userData = doc.data() as Map<String, dynamic>;
                     final email = (userData['email'] ?? '').toString().toLowerCase();
                     return _searchQuery.isEmpty || email.contains(_searchQuery);
                   }).toList();
-                  
+
                   if (users.isEmpty) {
                     return const Center(
                       child: Text('No se encontraron usuarios con ese correo'),
@@ -161,7 +168,7 @@ class _FoodScreenAdminState extends State<FoodScreenAdmin> {
                               final userId = users[index].id;
                               final name = userData['name'] ?? 'Sin nombre';
                               final email = userData['email'] ?? 'Sin correo';
-                              
+
                               return ListTile(
                                 title: Text(name),
                                 subtitle: Text(email),
@@ -177,9 +184,9 @@ class _FoodScreenAdminState extends State<FoodScreenAdmin> {
                           ),
                         ),
                       ),
-                      
+
                       const SizedBox(width: 16),
-                      
+
                       Expanded(
                         flex: 2,
                         child: selectedUserId != null
@@ -219,11 +226,11 @@ class _FoodScreenAdminState extends State<FoodScreenAdmin> {
                   child: CircularProgressIndicator(),
                 );
               }
-              
+
               final userData = snapshot.data!.data() as Map<String, dynamic>?;
               final name = userData?['name'] ?? 'Usuario';
               final email = userData?['email'] ?? 'Sin correo';
-              
+
               return Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
@@ -232,7 +239,7 @@ class _FoodScreenAdminState extends State<FoodScreenAdmin> {
                     Text(
                       name,
                       style: const TextStyle(
-                        fontSize: 18, 
+                        fontSize: 18,
                         fontWeight: FontWeight.bold
                       ),
                     ),
@@ -257,7 +264,7 @@ class _FoodScreenAdminState extends State<FoodScreenAdmin> {
               );
             },
           ),
-          
+
           Expanded(
             child: ListView.builder(
               itemCount: daysOfWeek.length,
@@ -265,7 +272,7 @@ class _FoodScreenAdminState extends State<FoodScreenAdmin> {
                 final day = daysOfWeek[index];
                 final dateComponents = day.split('-');
                 final formattedDay = '${dateComponents[2]}/${dateComponents[1]}/${dateComponents[0]}';
-                
+
                 return Card(
                   margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   child: ExpansionTile(
@@ -283,10 +290,10 @@ class _FoodScreenAdminState extends State<FoodScreenAdmin> {
                           if (!snapshot.hasData) {
                             return const Center(child: CircularProgressIndicator());
                           }
-                          
+
                           final userData = snapshot.data!.data() as Map<String, dynamic>?;
                           final meals = userData?['meals'] ?? {};
-                          
+
                           return Column(
                             children: [
                               for (String mealType in [
@@ -317,7 +324,7 @@ class _FoodScreenAdminState extends State<FoodScreenAdmin> {
                                           trailing: IconButton(
                                             icon: const Icon(Icons.delete, color: Colors.red),
                                             onPressed: () async {
-                                          
+
                                               await FirebaseFirestore.instance
                                                   .collection('users')
                                                   .doc(selectedUserId)
@@ -329,7 +336,7 @@ class _FoodScreenAdminState extends State<FoodScreenAdmin> {
                                         ),
                                   ],
                                 ),
-                              
+
                               Padding(
                                 padding: const EdgeInsets.all(16.0),
                                 child: ElevatedButton.icon(
