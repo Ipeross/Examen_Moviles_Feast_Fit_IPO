@@ -51,16 +51,13 @@ class _FoodScreenAdminState extends State<FoodScreenAdmin> {
       final userRef =
           FirebaseFirestore.instance.collection('users').doc(selectedUserId);
 
-      await userRef.set(
-          {
-            "meals": {
-              day: {
-                mealType: FieldValue.arrayUnion([food])
-              }
-            }
-          },
-          SetOptions(
-              merge: true));
+      await userRef.set({
+        "meals": {
+          day: {
+            mealType: FieldValue.arrayUnion([food])
+          }
+        }
+      }, SetOptions(merge: true));
     }
   }
 
@@ -70,141 +67,143 @@ class _FoodScreenAdminState extends State<FoodScreenAdmin> {
     showDialog(
       context: context,
       builder: (context) {
-        return StatefulBuilder(
-          builder: (context, setState) {
-            return AlertDialog(
-              title: const Text("Añadir plato"),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  DropdownButton<String>(
-                    value: selectedMealType,
-                    onChanged: (value) {
-                      setState(() {
-                        selectedMealType = value!;
-                      });
+        return StatefulBuilder(builder: (context, setState) {
+          return AlertDialog(
+            title: const Text("Añadir plato"),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                DropdownButton<String>(
+                  value: selectedMealType,
+                  onChanged: (value) {
+                    setState(() {
+                      selectedMealType = value!;
+                    });
+                  },
+                  items: ["Desayuno", "Almuerzo", "Snack", "Cena"]
+                      .map((type) =>
+                          DropdownMenuItem(value: type, child: Text(type)))
+                      .toList(),
+                ),
+                for (String food
+                    in mealFoodRestrictions[selectedMealType] ?? [])
+                  ListTile(
+                    title: Text(food),
+                    onTap: () {
+                      addFoodToUser(day, selectedMealType, food);
+                      Navigator.pop(context);
                     },
-                    items: ["Desayuno", "Almuerzo", "Snack", "Cena"]
-                        .map((type) =>
-                            DropdownMenuItem(value: type, child: Text(type)))
-                        .toList(),
                   ),
-                  for (String food in mealFoodRestrictions[selectedMealType] ?? [])
-                    ListTile(
-                      title: Text(food),
-                      onTap: () {
-                        addFoodToUser(day, selectedMealType, food);
-                        Navigator.pop(context);
-                      },
-                    ),
-                ],
-              ),
-            );
-          }
-        );
+              ],
+            ),
+          );
+        });
       },
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Administrar Planes Alimenticios"),
-        backgroundColor: Colors.blue.shade700,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            TextField(
-              controller: _searchController,
-              decoration: InputDecoration(
-                hintText: 'Buscar usuario por correo',
-                prefixIcon: const Icon(Icons.search),
-                filled: true,
-                fillColor: Colors.grey.shade200,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(30),
-                  borderSide: BorderSide.none,
-                ),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        children: [
+          TextField(
+            controller: _searchController,
+            decoration: InputDecoration(
+              hintText: 'Buscar usuario por correo',
+              prefixIcon: const Icon(Icons.search),
+              filled: true,
+              fillColor: Colors.grey.shade200,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(30),
+                borderSide: BorderSide.none,
               ),
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
             ),
-            const SizedBox(height: 16),
+          ),
+          const SizedBox(height: 16),
+          Expanded(
+            child: StreamBuilder<QuerySnapshot>(
+              stream: FirebaseFirestore.instance
+                  .collection('users')
+                  .where('isAdmin', isEqualTo: false)
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return const Center(child: CircularProgressIndicator());
+                }
 
-            Expanded(
-              child: StreamBuilder<QuerySnapshot>(
-                stream: FirebaseFirestore.instance
-                    .collection('users')
-                    .where('isAdmin', isEqualTo: false)
-                    .snapshots(),
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
+                final users = snapshot.data!.docs.where((doc) {
+                  final userData = doc.data() as Map<String, dynamic>;
+                  final email =
+                      (userData['email'] ?? '').toString().toLowerCase();
+                  return _searchQuery.isEmpty || email.contains(_searchQuery);
+                }).toList();
 
-                  final users = snapshot.data!.docs.where((doc) {
-                    final userData = doc.data() as Map<String, dynamic>;
-                    final email = (userData['email'] ?? '').toString().toLowerCase();
-                    return _searchQuery.isEmpty || email.contains(_searchQuery);
-                  }).toList();
+                if (users.isEmpty) {
+                  return const Center(
+                    child: Text('No se encontraron usuarios con ese correo'),
+                  );
+                }
+                return Row(
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: Card(
+                        elevation: 4,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        child: ListView.builder(
+                          itemCount: users.length,
+                          itemBuilder: (context, index) {
+                            final userData =
+                                users[index].data() as Map<String, dynamic>;
+                            final userId = users[index].id;
+                            final name = userData['name'] ?? 'Sin nombre';
+                            final email = userData['email'] ?? 'Sin correo';
 
-                  if (users.isEmpty) {
-                    return const Center(
-                      child: Text('No se encontraron usuarios con ese correo'),
-                    );
-                  }
-                  return Row(
-                    children: [
-                      Expanded(
-                        flex: 1,
-                        child: Card(
-                          elevation: 4,
-                          child: ListView.builder(
-                            itemCount: users.length,
-                            itemBuilder: (context, index) {
-                              final userData = users[index].data() as Map<String, dynamic>;
-                              final userId = users[index].id;
-                              final name = userData['name'] ?? 'Sin nombre';
-                              final email = userData['email'] ?? 'Sin correo';
-
-                              return ListTile(
-                                title: Text(name),
-                                subtitle: Text(email),
-                                selected: selectedUserId == userId,
-                                selectedTileColor: Colors.blue.shade100,
-                                onTap: () {
-                                  setState(() {
-                                    selectedUserId = userId;
-                                  });
-                                },
-                              );
-                            },
-                          ),
+                            return ListTile(
+                              title: Text(name),
+                              subtitle: Text(email),
+                              selected: selectedUserId == userId,
+                              selectedTileColor: Theme.of(context).brightness == Brightness.dark
+                                  ? Colors.grey.shade800
+                                  : Colors.blue.shade100,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              onTap: () {
+                                setState(() {
+                                  selectedUserId = userId;
+                                });
+                              },
+                            );
+                          },
                         ),
                       ),
-
-                      const SizedBox(width: 16),
-
-                      Expanded(
-                        flex: 2,
-                        child: selectedUserId != null
-                            ? _buildFoodPlanView()
-                            : const Center(
-                                child: Text(
-                                  'Selecciona un usuario para ver su plan alimenticio',
-                                  style: TextStyle(fontSize: 16, color: Colors.grey),
-                                ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      flex: 2,
+                      child: selectedUserId != null
+                          ? _buildFoodPlanView()
+                          : const Center(
+                              child: Text(
+                                'Selecciona un usuario para ver su plan alimenticio',
+                                style: TextStyle(
+                                    fontSize: 16, color: Colors.grey),
                               ),
-                      ),
-                    ],
-                  );
-                },
-              ),
+                            ),
+                    ),
+                  ],
+                );
+              },
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -212,6 +211,9 @@ class _FoodScreenAdminState extends State<FoodScreenAdmin> {
   Widget _buildFoodPlanView() {
     return Card(
       elevation: 4,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15),
+      ),
       child: Column(
         children: [
           StreamBuilder<DocumentSnapshot>(
@@ -239,9 +241,7 @@ class _FoodScreenAdminState extends State<FoodScreenAdmin> {
                     Text(
                       name,
                       style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold
-                      ),
+                          fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     Text(
                       email,
@@ -250,7 +250,8 @@ class _FoodScreenAdminState extends State<FoodScreenAdmin> {
                         color: Colors.grey.shade700,
                       ),
                     ),
-                    if (userData?['weight'] != null && userData?['height'] != null)
+                    if (userData?['weight'] != null &&
+                        userData?['height'] != null)
                       Padding(
                         padding: const EdgeInsets.only(top: 4.0),
                         child: Text(
@@ -264,17 +265,21 @@ class _FoodScreenAdminState extends State<FoodScreenAdmin> {
               );
             },
           ),
-
           Expanded(
             child: ListView.builder(
               itemCount: daysOfWeek.length,
               itemBuilder: (context, index) {
                 final day = daysOfWeek[index];
                 final dateComponents = day.split('-');
-                final formattedDay = '${dateComponents[2]}/${dateComponents[1]}/${dateComponents[0]}';
+                final formattedDay =
+                    '${dateComponents[2]}/${dateComponents[1]}/${dateComponents[0]}';
 
                 return Card(
-                  margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
                   child: ExpansionTile(
                     title: Text(
                       formattedDay,
@@ -288,10 +293,12 @@ class _FoodScreenAdminState extends State<FoodScreenAdmin> {
                             .snapshots(),
                         builder: (context, snapshot) {
                           if (!snapshot.hasData) {
-                            return const Center(child: CircularProgressIndicator());
+                            return const Center(
+                                child: CircularProgressIndicator());
                           }
 
-                          final userData = snapshot.data!.data() as Map<String, dynamic>?;
+                          final userData =
+                              snapshot.data!.data() as Map<String, dynamic>?;
                           final meals = userData?['meals'] ?? {};
 
                           return Column(
@@ -306,7 +313,8 @@ class _FoodScreenAdminState extends State<FoodScreenAdmin> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Padding(
-                                      padding: const EdgeInsets.only(left: 16, top: 8),
+                                      padding: const EdgeInsets.only(
+                                          left: 16, top: 8),
                                       child: Text(
                                         mealType.toUpperCase(),
                                         style: const TextStyle(
@@ -322,21 +330,22 @@ class _FoodScreenAdminState extends State<FoodScreenAdmin> {
                                           leading: const Icon(Icons.restaurant),
                                           title: Text(meal),
                                           trailing: IconButton(
-                                            icon: const Icon(Icons.delete, color: Colors.red),
+                                            icon: const Icon(Icons.delete,
+                                                color: Colors.red),
                                             onPressed: () async {
-
                                               await FirebaseFirestore.instance
                                                   .collection('users')
                                                   .doc(selectedUserId)
                                                   .update({
-                                                'meals.$day.$mealType': FieldValue.arrayRemove([meal])
+                                                'meals.$day.$mealType':
+                                                    FieldValue.arrayRemove(
+                                                        [meal])
                                               });
                                             },
                                           ),
                                         ),
                                   ],
                                 ),
-
                               Padding(
                                 padding: const EdgeInsets.all(16.0),
                                 child: ElevatedButton.icon(
@@ -346,6 +355,9 @@ class _FoodScreenAdminState extends State<FoodScreenAdmin> {
                                   style: ElevatedButton.styleFrom(
                                     foregroundColor: Colors.white,
                                     backgroundColor: Colors.blue,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(15),
+                                    ),
                                   ),
                                 ),
                               ),
