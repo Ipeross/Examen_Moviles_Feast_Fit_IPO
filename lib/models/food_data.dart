@@ -1,4 +1,3 @@
-// data_maps.dart
 final Map<String, String> mealTypeImages = {
   'Desayuno': 'assets/breakfast.jpg',
   'Almuerzo': 'assets/lunch.jpg',

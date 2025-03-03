@@ -189,6 +189,7 @@ class _LoginScreenState extends State<LoginScreen>
                     children: [
                       TextFormField(
                         controller: _emailController,
+                        keyboardType: TextInputType.emailAddress,
                         decoration: InputDecoration(
                           hintText: 'Correo electrónico',
                           prefixIcon:

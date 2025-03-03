@@ -151,6 +151,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                         const SizedBox(height: 20),
                         TextFormField(
                           controller: _emailController,
+                          keyboardType: TextInputType.emailAddress,
                           decoration: InputDecoration(
                             hintText: 'Correo electrónico',
                             prefixIcon:
