@@ -1,0 +1,2 @@
+C:/flutter proyects/FeastFit Versions/feast_fit/android/app/.cxx/Debug/y1h1m6k1/armeabi-v7a/CMakeFiles/edit_cache.dir
+C:/flutter proyects/FeastFit Versions/feast_fit/android/app/.cxx/Debug/y1h1m6k1/armeabi-v7a/CMakeFiles/rebuild_cache.dir

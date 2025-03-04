@@ -47,7 +47,7 @@ class MainScreen extends StatelessWidget {
           bool isAdmin = snapshot.data ?? false;
 
           return DefaultTabController(
-            length: 3,
+            length: isAdmin ? 2 : 3,
             child: Scaffold(
               body: BackgroundContainer(
                 child: TabBarView(
@@ -55,7 +55,6 @@ class MainScreen extends StatelessWidget {
                       ? [
                           const HomeScreen(),
                           const FoodScreenAdmin(),
-                          ChartScreenAdmin(),
                         ]
                       : [
                           const HomeScreen(),
@@ -69,14 +68,13 @@ class MainScreen extends StatelessWidget {
                     ? [
                         const Tab(icon: Icon(Icons.home), text: 'Inicio'),
                         const Tab(icon: Icon(Icons.fastfood), text: 'Dieta'),
-                        const Tab(icon: Icon(Icons.bar_chart), text: 'Gráfico'),
                       ]
                     : [
                         const Tab(icon: Icon(Icons.home), text: 'Inicio'),
                         const Tab(icon: Icon(Icons.fastfood), text: 'Dieta'),
                         const Tab(icon: Icon(Icons.bar_chart), text: 'Gráfico'),
                       ],
-                labelColor: const Color.fromARGB(255, 218, 115, 30),
+                labelColor: Colors.blue,
                 unselectedLabelColor: Colors.grey,
                 indicatorSize: TabBarIndicatorSize.label,
               ),

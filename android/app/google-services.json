@@ -12,7 +12,20 @@
           "package_name": "com.example.feast_fit"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "280829052207-mafr9g2m18mos6qugmqs9glijb36r0l4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.feast_fit",
+            "certificate_hash": "b2fcdb14d8ce20c25971bfb82be62645e18a728e"
+          }
+        },
+        {
+          "client_id": "280829052207-qa3ugue34o18or3gkh0ole4n4t5fqac3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyC_QPX9bHqY0kXTtAfzv6ONigBA6_c9NZc"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "280829052207-qa3ugue34o18or3gkh0ole4n4t5fqac3.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "280829052207-r186983gngtubjdnlfoac4vrjgrv97pe.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.feastFit"
+              }
+            }
+          ]
         }
       }
     }

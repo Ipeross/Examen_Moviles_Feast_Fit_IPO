@@ -30,21 +30,64 @@ class _ChartScreenState extends State<ChartScreen> {
     _loadChartData();
   }
 
-  Future<void> _loadChartData() async {
-    User? user = _auth.currentUser;
-    if (user != null) {
-      final DocumentSnapshot snapshot = await _firestore.collection('users').doc(user.uid).get();
-      final List<dynamic> loadedData = snapshot.get('chartData') ?? [];
-      setState(() {
-        chartData = loadedData.map((data) => FlSpot(data['x'], data['y'])).toList();
-      });
-    }
-  }
-
   void toggleChartType() {
     setState(() {
       isBarChart = !isBarChart;
     });
+  }
+
+  // Eliminar duplicados o agrupar puntos
+  List<FlSpot> removeDuplicates(List<FlSpot> data) {
+    Map<double, FlSpot> uniqueData = {};
+    for (var spot in data) {
+      if (!uniqueData.containsKey(spot.y)) {
+        uniqueData[spot.y] = spot;
+      }
+    }
+    return uniqueData.values.toList();
+  }
+
+  // Desplazamiento de puntos duplicados
+  List<FlSpot> offsetDuplicatePoints(List<FlSpot> data) {
+    List<FlSpot> result = [];
+    Map<double, double> seenYValues = {};
+    for (var spot in data) {
+      if (seenYValues.containsKey(spot.y)) {
+        seenYValues[spot.y] =
+            seenYValues[spot.y]! + 1;
+      } else {
+        seenYValues[spot.y] = spot.x;
+      }
+      result.add(FlSpot(seenYValues[spot.y]!, spot.y));
+    }
+    return result;
+  }
+
+  Future<void> _loadChartData() async {
+    User? user = _auth.currentUser;
+    if (user != null) {
+      final DocumentSnapshot snapshot =
+          await _firestore.collection('users').doc(user.uid).get();
+
+      final List<dynamic> loadedData = snapshot.get('chartData') ?? [];
+      final String weightString = snapshot.get('weight') ?? "0";
+      final double initialWeight = double.tryParse(weightString) ?? 0.0;
+
+      setState(() {
+        chartData =
+            loadedData.map((data) => FlSpot(data['x'], data['y'])).toList();
+
+        // Si no hay datos en la gráfica, añadir el peso del usuario
+        if (chartData.isEmpty && initialWeight > 0) {
+          chartData.add(FlSpot(
+            DateTime.now().millisecondsSinceEpoch.toDouble(),
+            initialWeight,
+          ));
+        }
+
+        chartData = offsetDuplicatePoints(chartData);
+      });
+    }
   }
 
   Future<void> addData() async {
@@ -57,21 +100,32 @@ class _ChartScreenState extends State<ChartScreen> {
       return;
     }
 
+    // Verificar si el valor es el mismo que el último valor añadido
+    if (chartData.isNotEmpty && chartData.last.y == value) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Este valor ya fue agregado previamente")),
+      );
+      return;
+    }
+
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
 
-    int todayDataCount = chartData.where((spot) {
+    // Verificar si ya se agregó un dato hoy
+    bool isDataAddedToday = chartData.any((spot) {
       final spotDate = DateTime.fromMillisecondsSinceEpoch(spot.x.toInt());
-      return spotDate.year == today.year && spotDate.month == today.month && spotDate.day == today.day;
-    }).length;
+      return spotDate.year == today.year &&
+          spotDate.month == today.month &&
+          spotDate.day == today.day;
+    });
 
-    if (todayDataCount >= 2) {
+    if (isDataAddedToday) {
       showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text('Límite de datos alcanzado'),
-            content: Text('No se puede añadir más de dos datos al día.'),
+            content: Text('Solo puedes agregar un dato al día.'),
             actions: [
               TextButton(
                 onPressed: () {
@@ -89,17 +143,36 @@ class _ChartScreenState extends State<ChartScreen> {
     final FlSpot newSpot = FlSpot(now.millisecondsSinceEpoch.toDouble(), value);
     setState(() {
       chartData.add(newSpot);
+      chartData = offsetDuplicatePoints(chartData);
     });
 
     User? user = _auth.currentUser;
     if (user != null) {
       await _firestore.collection('users').doc(user.uid).update({
-        'chartData': chartData.map((spot) => {'x': spot.x, 'y': spot.y}).toList(),
+        'chartData':
+            chartData.map((spot) => {'x': spot.x, 'y': spot.y}).toList(),
         'weight': value.toString(),
       });
     }
 
     _controllerValue.clear();
+  }
+
+  Future<void> removeLastData() async {
+    if (chartData.isNotEmpty) {
+      setState(() {
+        chartData.removeLast();
+        chartData = offsetDuplicatePoints(chartData);
+      });
+
+      User? user = _auth.currentUser;
+      if (user != null) {
+        await _firestore.collection('users').doc(user.uid).update({
+          'chartData':
+              chartData.map((spot) => {'x': spot.x, 'y': spot.y}).toList(),
+        });
+      }
+    }
   }
 
   @override
@@ -137,6 +210,17 @@ class _ChartScreenState extends State<ChartScreen> {
                     backgroundColor: gradientColors.first,
                   ),
                   child: const Text('Agregar Datos'),
+                ),
+                const SizedBox(height: 10),
+                ElevatedButton(
+                  onPressed: chartData.length >= 2 && isBarChart
+                      ? removeLastData
+                      : null, // Deshabilitar si estamos en la otra grafica
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    backgroundColor: gradientColors.first,
+                  ),
+                  child: const Text('Eliminar Último Dato'),
                 ),
                 const SizedBox(height: 60),
                 Center(
@@ -236,7 +320,7 @@ class _ChartScreenState extends State<ChartScreen> {
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton(
-                  onPressed: toggleChartType,
+                  onPressed: chartData.length >= 2 ? toggleChartType : null,
                   style: ElevatedButton.styleFrom(
                     foregroundColor: Colors.white,
                     backgroundColor: gradientColors.first,
