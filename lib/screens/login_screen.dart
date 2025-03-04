@@ -97,7 +97,7 @@ class _LoginScreenState extends State<LoginScreen>
     try {
       // Configurar Google Sign In
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-      
+
       // Si el usuario cancela el inicio de sesión
       if (googleUser == null) {
         setState(() {
@@ -105,33 +105,41 @@ class _LoginScreenState extends State<LoginScreen>
         });
         return;
       }
-      
+
       // Obtener detalles de autenticación del request
-      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
-      
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+
       // Crear credencial para Firebase
       final credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
-      
+
       // Iniciar sesión con Firebase usando la credencial de Google
-      final UserCredential userCredential = 
+      final UserCredential userCredential =
           await FirebaseAuth.instance.signInWithCredential(credential);
-      
+
       // Obtener el usuario actual
       final User? user = userCredential.user;
-      
+
       if (user != null) {
-        // Guardar o actualizar la información del usuario en Firestore
+        // Guardar o actualizar la información básica del usuario en Firestore
         await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
           'email': user.email,
           'displayName': user.displayName,
           'photoURL': user.photoURL,
           'lastLogin': FieldValue.serverTimestamp(),
           'provider': 'google',
+          'name': "",
+          'weight': "0",
+          'height': "",
+          'sportActivity': "",
+          'isAdmin': false,
+          'chartData': [],
+          'meals': {},
         }, SetOptions(merge: true));
-        
+
         // Navegar a la pantalla principal
         Navigator.pushReplacement(
           context,
@@ -144,7 +152,8 @@ class _LoginScreenState extends State<LoginScreen>
         context: context,
         builder: (context) => AlertDialog(
           title: const Text('Error de inicio de sesión'),
-          content: Text('No se pudo iniciar sesión con Google: ${e.toString()}'),
+          content:
+              Text('No se pudo iniciar sesión con Google: ${e.toString()}'),
           actions: [
             TextButton(
               onPressed: () {
@@ -264,7 +273,8 @@ class _LoginScreenState extends State<LoginScreen>
                       ElevatedButton(
                         onPressed: isLoading ? null : _login,
                         style: ElevatedButton.styleFrom(
-                          foregroundColor: const Color.fromARGB(255, 85, 57, 15),
+                          foregroundColor:
+                              const Color.fromARGB(255, 85, 57, 15),
                           backgroundColor: Colors.white,
                           padding: const EdgeInsets.symmetric(
                               horizontal: 50, vertical: 15),

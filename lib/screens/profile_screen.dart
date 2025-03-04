@@ -3,7 +3,6 @@ import 'package:feast_fit/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
@@ -50,8 +49,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void _loadDataToControllers() {
     _nameController.text = _userData['name'] ?? '';
     _emailController.text = _userData['email'] ?? '';
-    _weightController.text = _userData['weight']?.toString() ?? '';
-    _heightController.text = _userData['height']?.toString() ?? '';
+    _weightController.text = _userData['weight'] ?? '';
+    _heightController.text = _userData['height'] ?? '';
     _sportActivityController.text = _userData['sportActivity'] ?? '';
     print("Datos cargados en controladores: Nombre=${_nameController.text}, Email=${_emailController.text}");
   }
@@ -68,8 +67,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
           final updatedData = {
             'name': _nameController.text,
             'email': _emailController.text,
-            'weight': double.tryParse(_weightController.text) ?? 0.0,
-            'height': double.tryParse(_heightController.text) ?? 0.0,
+            'weight': _weightController.text,  // Se guarda como String
+            'height': _heightController.text,  // Se guarda como String
             'sportActivity': _sportActivityController.text,
           };
           
