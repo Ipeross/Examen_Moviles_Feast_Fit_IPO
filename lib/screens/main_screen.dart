@@ -53,7 +53,7 @@ class MainScreen extends StatelessWidget {
                 child: TabBarView(
                   children: isAdmin
                       ? [
-                          const HomeScreen(),
+                          const HomeScreenAdmin(),
                           const FoodScreenAdmin(),
                         ]
                       : [

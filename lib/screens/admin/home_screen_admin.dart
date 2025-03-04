@@ -1,8 +1,8 @@
 import 'package:feast_fit/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+class HomeScreenAdmin extends StatelessWidget {
+  const HomeScreenAdmin({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -31,8 +31,6 @@ class HomeScreen extends StatelessWidget {
                       _buildFeaturedRecipe(context),
                       const SizedBox(height: 20),
                       _buildRecommendedRecipes(context),
-                      const SizedBox(height: 20),
-                      _buildDailyPlan(context),
                     ],
                   ),
                 ),
@@ -101,41 +99,6 @@ class HomeScreen extends StatelessWidget {
               _buildRecipeCard(context, 'Avena con Frutas', 'assets/oatmeal.jpg'),
               _buildRecipeCard(context, 'Tostadas con Aguacate', 'assets/aguacate.jpg'),
             ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildDailyPlan(BuildContext context) {
-    final theme = Theme.of(context);
-    final List<Map<String, String>> meals = [
-      {'name': 'Desayuno', 'image': 'assets/oatmeal.jpg'},
-      {'name': 'Almuerzo', 'image': 'assets/oatmeal.jpg'},
-      {'name': 'Cena', 'image': 'assets/oatmeal.jpg'},
-      {'name': 'Snack', 'image': 'assets/oatmeal.jpg'},
-    ];
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Plan del Día',
-          style: theme.textTheme.titleLarge,
-        ),
-        const SizedBox(height: 10),
-        SizedBox(
-          height: 150,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: meals.length,
-            itemBuilder: (context, index) {
-              return _buildRecipeCard(
-                context,
-                meals[index]['name']!,
-                meals[index]['image']!
-              );
-            },
           ),
         ),
       ],
