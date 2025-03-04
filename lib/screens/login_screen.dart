@@ -131,7 +131,6 @@ class _LoginScreenState extends State<LoginScreen>
           'photoURL': user.photoURL,
           'lastLogin': FieldValue.serverTimestamp(),
           'provider': 'google',
-          'name': "",
           'weight': "0",
           'height': "",
           'sportActivity': "",

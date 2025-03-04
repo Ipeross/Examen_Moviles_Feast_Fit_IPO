@@ -25,9 +25,10 @@ class _FoodScreenState extends State<FoodScreen> {
   void _generateDaysOfWeek() {
     final now = DateTime.now();
     _daysOfWeek.clear();
-    for (int i = 0; i < 7; i++) {
+    for (int i = -7; i < 7; i++) {
       final day = now.add(Duration(days: i));
-      final formattedDate = "${day.year}-${day.month.toString().padLeft(2, '0')}-${day.day.toString().padLeft(2, '0')}";
+      final formattedDate =
+          "${day.year}-${day.month.toString().padLeft(2, '0')}-${day.day.toString().padLeft(2, '0')}";
       _daysOfWeek.add(formattedDate);
     }
   }
@@ -38,14 +39,21 @@ class _FoodScreenState extends State<FoodScreen> {
 
     try {
       final date = DateTime(
-        int.parse(parts[0]),
-        int.parse(parts[1]),
-        int.parse(parts[2])
-      );
+          int.parse(parts[0]), int.parse(parts[1]), int.parse(parts[2]));
 
       const monthNames = [
-        'ene.', 'feb.', 'mar.', 'abr.', 'may.', 'jun.',
-        'jul.', 'ago.', 'sept.', 'oct.', 'nov.', 'dic.'
+        'ene.',
+        'feb.',
+        'mar.',
+        'abr.',
+        'may.',
+        'jun.',
+        'jul.',
+        'ago.',
+        'sept.',
+        'oct.',
+        'nov.',
+        'dic.'
       ];
 
       return "${date.day} ${monthNames[date.month - 1]} ${date.year}";
@@ -67,10 +75,12 @@ class _FoodScreenState extends State<FoodScreen> {
   }
 
   String _generateDescription(String foodName) {
-    return descriptions[foodName] ?? 'Plato nutritivo preparado con ingredientes frescos';
+    return descriptions[foodName] ??
+        'Plato nutritivo preparado con ingredientes frescos';
   }
 
-  Widget _buildFoodItem(BuildContext context, String foodName, String mealType) {
+  Widget _buildFoodItem(
+      BuildContext context, String foodName, String mealType) {
     final imageUrl = _getFoodImage(foodName);
     final calories = _estimateCalories(foodName);
     final description = _generateDescription(foodName);
@@ -170,7 +180,8 @@ class _FoodScreenState extends State<FoodScreen> {
                       Row(
                         children: [
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 2),
                             decoration: BoxDecoration(
                               color: Colors.green.withOpacity(0.1),
                               borderRadius: BorderRadius.circular(10),
@@ -186,7 +197,8 @@ class _FoodScreenState extends State<FoodScreen> {
                           ),
                           const SizedBox(width: 8),
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 2),
                             decoration: BoxDecoration(
                               color: Colors.blue.withOpacity(0.1),
                               borderRadius: BorderRadius.circular(10),
@@ -213,7 +225,8 @@ class _FoodScreenState extends State<FoodScreen> {
     );
   }
 
-  Widget _buildMealTypeSection(String dayKey, String mealType, List<String> foods) {
+  Widget _buildMealTypeSection(
+      String dayKey, String mealType, List<String> foods) {
     if (foods.isEmpty) {
       return const SizedBox.shrink();
     }
@@ -232,7 +245,9 @@ class _FoodScreenState extends State<FoodScreen> {
             ),
           ),
         ),
-        ...foods.map((food) => _buildFoodItem(context, food, mealType)).toList(),
+        ...foods
+            .map((food) => _buildFoodItem(context, food, mealType))
+            .toList(),
       ],
     );
   }
@@ -358,9 +373,12 @@ class _FoodScreenState extends State<FoodScreen> {
                           ),
                           children: [
                             if (meals.containsKey(day))
-                              ...["Desayuno", "Almuerzo", "Snack", "Cena"].map((mealType) {
-                                final mealData = meals[day] as Map<String, dynamic>? ?? {};
-                                final foodList = mealData[mealType] as List<dynamic>? ?? [];
+                              ...["Desayuno", "Almuerzo", "Snack", "Cena"]
+                                  .map((mealType) {
+                                final mealData =
+                                    meals[day] as Map<String, dynamic>? ?? {};
+                                final foodList =
+                                    mealData[mealType] as List<dynamic>? ?? [];
                                 return _buildMealTypeSection(
                                   day,
                                   mealType,
