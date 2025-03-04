@@ -1,5 +1,11 @@
-import 'package:feast_fit/widgets/widgets.dart';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:intl/intl.dart';
+import 'package:flutter/services.dart';
+import 'package:feast_fit/widgets/widgets.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -7,7 +13,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Column(
       children: [
         const CustomAppBar2(
@@ -40,13 +46,13 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
         ),
-      ]
+      ],
     );
   }
 
   Widget _buildFeaturedRecipe(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
@@ -83,7 +89,7 @@ class HomeScreen extends StatelessWidget {
 
   Widget _buildRecommendedRecipes(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -107,44 +113,113 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
+ Future<List<String>> _loadAssetImages() async {
+    // Cargar todas las imágenes de la carpeta assets
+    final List<String> imagePaths = [];
+    final manifestContent = await rootBundle.loadString('AssetManifest.json');
+    final Map<String, dynamic> manifestMap = json.decode(manifestContent);
+
+    // Filtrar las imágenes que están en la carpeta assets
+    manifestMap.forEach((key, value) {
+      if (key.startsWith('assets/') && (key.endsWith('.jpg') || key.endsWith('.png'))) {
+        imagePaths.add(key);
+      }
+    });
+
+    return imagePaths;
+  }
+
   Widget _buildDailyPlan(BuildContext context) {
     final theme = Theme.of(context);
-    final List<Map<String, String>> meals = [
-      {'name': 'Desayuno', 'image': 'assets/oatmeal.jpg'},
-      {'name': 'Almuerzo', 'image': 'assets/oatmeal.jpg'},
-      {'name': 'Cena', 'image': 'assets/oatmeal.jpg'},
-      {'name': 'Snack', 'image': 'assets/oatmeal.jpg'},
-    ];
+    final now = DateTime.now();
+    final formattedDate = DateFormat('yyyy-MM-dd').format(now);
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Plan del Día',
-          style: theme.textTheme.titleLarge,
-        ),
-        const SizedBox(height: 10),
-        SizedBox(
-          height: 150,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: meals.length,
-            itemBuilder: (context, index) {
-              return _buildRecipeCard(
-                context,
-                meals[index]['name']!,
-                meals[index]['image']!
-              );
-            },
-          ),
-        ),
-      ],
+    return FutureBuilder<DocumentSnapshot>(
+      future: FirebaseFirestore.instance
+          .collection('users')
+          .doc(FirebaseAuth.instance.currentUser ?.uid)
+          .get(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const CircularProgressIndicator();
+        }
+
+        if (snapshot.hasError) {
+          return const Text('Error al cargar el plan del día');
+        }
+
+        if (!snapshot.hasData || !snapshot.data!.exists) {
+          return const Text('No se encontró información del plan del día');
+        }
+
+        final userData = snapshot.data!.data() as Map<String, dynamic>;
+        final meals = userData['meals'] as Map<String, dynamic>? ?? {};
+        final dayMeals = meals[formattedDate] as Map<String, dynamic>? ?? {};
+
+        if (dayMeals.isEmpty) {
+          return const Center(
+            child: Text(
+              'NO HAY COMIDA HOY',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Color.fromARGB(255, 85, 54, 29),
+              ),
+            ),
+          );
+        }
+
+        return FutureBuilder<List<String>>(
+          future: _loadAssetImages(),
+          builder: (context, imageSnapshot) {
+            if (imageSnapshot.connectionState == ConnectionState.waiting) {
+              return const CircularProgressIndicator();
+            }
+
+            if (imageSnapshot.hasError) {
+              return const Text('Error al cargar las imágenes');
+            }
+
+            final imagePaths = imageSnapshot.data ?? [];
+
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Plan del Día',
+                  style: theme.textTheme.titleLarge,
+                ),
+                const SizedBox(height: 10),
+                SizedBox(
+                  height: 150,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: dayMeals.length,
+                    itemBuilder: (context, index) {
+                      final mealType = dayMeals.keys.elementAt(index);
+                      final foodList = dayMeals[mealType] as List<dynamic>? ?? [];
+                      
+                      final randomImage = (imagePaths.isNotEmpty) ? imagePaths[index % imagePaths.length] : 'assets/carbonara.jpg';
+
+                      return _buildRecipeCard(
+                        context,
+                        '$mealType: ${foodList.join(", ")}',
+                        randomImage,
+                      );
+                    },
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+      },
     );
   }
 
   Widget _buildRecipeCard(BuildContext context, String title, String imagePath) {
     final theme = Theme.of(context);
-    
+
     return Padding(
       padding: const EdgeInsets.only(right: 10),
       child: ClipRRect(

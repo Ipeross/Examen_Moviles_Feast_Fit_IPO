@@ -364,7 +364,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                         ElevatedButton(
                           onPressed: isLoading ? null : _register,
                           style: ElevatedButton.styleFrom(
-                            foregroundColor: Colors.blue.shade700,
+                            foregroundColor: const Color.fromARGB(255, 85, 57, 15),
                             backgroundColor: Colors.white,
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 50, vertical: 15),
