@@ -6,21 +6,23 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    
     return Column(
       children: [
         const CustomAppBar2(
-        title: 'Bienvenido a FeastFit',
-      ),
-      Expanded(
-        child: Padding(
+          title: 'Bienvenido a FeastFit',
+        ),
+        Expanded(
+          child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 10),
-                const Text(
+                Text(
                   'Explora recetas saludables y personaliza tu plan de alimentación.',
-                  style: TextStyle(fontSize: 16, color: Colors.grey),
+                  style: TextStyle(fontSize: 16, color: theme.colorScheme.onSurface.withOpacity(0.6)),
                 ),
                 const SizedBox(height: 20),
                 Expanded(
@@ -37,12 +39,14 @@ class HomeScreen extends StatelessWidget {
               ],
             ),
           ),
-      ),]
-      
+        ),
+      ]
     );
   }
 
   Widget _buildFeaturedRecipe(BuildContext context) {
+    final theme = Theme.of(context);
+    
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
@@ -57,17 +61,20 @@ class HomeScreen extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
           gradient: LinearGradient(
-            colors: [Colors.black.withOpacity(0.6), Colors.transparent],
+            colors: [theme.primaryColorDark.withOpacity(0.6), Colors.transparent],
             begin: Alignment.bottomCenter,
             end: Alignment.topCenter,
           ),
         ),
-        child: const Align(
+        child: Align(
           alignment: Alignment.bottomLeft,
           child: Text(
             'Receta Destacada: Ensalada Cesar',
             style: TextStyle(
-                color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+              color: theme.colorScheme.onPrimary,
+              fontSize: 18,
+              fontWeight: FontWeight.bold
+            ),
           ),
         ),
       ),
@@ -75,12 +82,14 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget _buildRecommendedRecipes(BuildContext context) {
+    final theme = Theme.of(context);
+    
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           'Recomendaciones',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          style: theme.textTheme.titleLarge,
         ),
         const SizedBox(height: 10),
         SizedBox(
@@ -88,9 +97,9 @@ class HomeScreen extends StatelessWidget {
           child: ListView(
             scrollDirection: Axis.horizontal,
             children: [
-              _buildRecipeCard('Smoothie de Fresa', 'assets/smoothie.jpg'),
-              _buildRecipeCard('Avena con Frutas', 'assets/oatmeal.jpg'),
-              _buildRecipeCard('Tostadas con Aguacate', 'assets/aguacate.jpg'),
+              _buildRecipeCard(context, 'Smoothie de Fresa', 'assets/smoothie.jpg'),
+              _buildRecipeCard(context, 'Avena con Frutas', 'assets/oatmeal.jpg'),
+              _buildRecipeCard(context, 'Tostadas con Aguacate', 'assets/aguacate.jpg'),
             ],
           ),
         ),
@@ -99,6 +108,7 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget _buildDailyPlan(BuildContext context) {
+    final theme = Theme.of(context);
     final List<Map<String, String>> meals = [
       {'name': 'Desayuno', 'image': 'assets/oatmeal.jpg'},
       {'name': 'Almuerzo', 'image': 'assets/oatmeal.jpg'},
@@ -109,9 +119,9 @@ class HomeScreen extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           'Plan del Día',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          style: theme.textTheme.titleLarge,
         ),
         const SizedBox(height: 10),
         SizedBox(
@@ -121,7 +131,10 @@ class HomeScreen extends StatelessWidget {
             itemCount: meals.length,
             itemBuilder: (context, index) {
               return _buildRecipeCard(
-                  meals[index]['name']!, meals[index]['image']!);
+                context,
+                meals[index]['name']!,
+                meals[index]['image']!
+              );
             },
           ),
         ),
@@ -129,7 +142,9 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildRecipeCard(String title, String imagePath) {
+  Widget _buildRecipeCard(BuildContext context, String title, String imagePath) {
+    final theme = Theme.of(context);
+    
     return Padding(
       padding: const EdgeInsets.only(right: 10),
       child: ClipRRect(
@@ -147,7 +162,7 @@ class HomeScreen extends StatelessWidget {
               height: 130,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [Colors.black.withOpacity(0.6), Colors.transparent],
+                  colors: [theme.primaryColorDark.withOpacity(0.6), Colors.transparent],
                   begin: Alignment.bottomCenter,
                   end: Alignment.topCenter,
                 ),
@@ -158,8 +173,10 @@ class HomeScreen extends StatelessWidget {
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
                     title,
-                    style: const TextStyle(
-                        color: Colors.white, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      color: theme.colorScheme.onPrimary,
+                      fontWeight: FontWeight.bold
+                    ),
                   ),
                 ),
               ),

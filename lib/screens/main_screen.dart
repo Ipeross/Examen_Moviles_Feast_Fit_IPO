@@ -76,7 +76,7 @@ class MainScreen extends StatelessWidget {
                         const Tab(icon: Icon(Icons.fastfood), text: 'Dieta'),
                         const Tab(icon: Icon(Icons.bar_chart), text: 'Gráfico'),
                       ],
-                labelColor: Colors.blue,
+                labelColor: const Color.fromARGB(255, 218, 115, 30),
                 unselectedLabelColor: Colors.grey,
                 indicatorSize: TabBarIndicatorSize.label,
               ),
