@@ -32,39 +32,46 @@ class _IntoleranciasScreenState extends State<IntoleranciasScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text("Intolerancias")),
-      body: StreamBuilder<DocumentSnapshot>(
-        stream: FirebaseFirestore.instance
-            .collection('intolerancias')
-            .doc(user?.uid)
-            .snapshots(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData || !snapshot.data!.exists) {
-            return Center(child: Text("No hay intolerancias"));
-          }
+    return Column(
+      children: [
+        AppBar(title: Text("Intolerancias")),
+        Expanded(
+          child: StreamBuilder<DocumentSnapshot>(
+            stream: FirebaseFirestore.instance
+                .collection('intolerancias')
+                .doc(user?.uid)
+                .snapshots(),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData || !snapshot.data!.exists) {
+                return Center(child: Text("No hay intolerancias"));
+              }
 
-          List<dynamic> intolerancias = snapshot.data!['nombres'] ?? [];
+              List<dynamic> intolerancias = snapshot.data!['nombres'] ?? [];
 
-          return ListView.builder(
-            itemCount: intolerancias.length,
-            itemBuilder: (context, index) {
-              String intolerancia = intolerancias[index];
-              return ListTile(
-                title: Text(intolerancia),
-                trailing: IconButton(
-                  icon: Icon(Icons.delete, color: Colors.red),
-                  onPressed: () => _removeIntolerancia(intolerancia),
-                ),
+              return ListView.builder(
+                itemCount: intolerancias.length,
+                itemBuilder: (context, index) {
+                  String intolerancia = intolerancias[index];
+                  return Card(
+                    margin: EdgeInsets.all(8.0),
+                    child: ListTile(
+                      title: Text(intolerancia),
+                      trailing: IconButton(
+                        icon: Icon(Icons.delete, color: Colors.red),
+                        onPressed: () => _removeIntolerancia(intolerancia),
+                      ),
+                    ),
+                  );
+                },
               );
             },
-          );
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _navigateToAddIntoleranciaForm(context),
-        child: Icon(Icons.add),
-      ),
+          ),
+        ),
+        FloatingActionButton(
+          onPressed: () => _navigateToAddIntoleranciaForm(context),
+          child: Icon(Icons.add),
+        ),
+      ],
     );
   }
 }
