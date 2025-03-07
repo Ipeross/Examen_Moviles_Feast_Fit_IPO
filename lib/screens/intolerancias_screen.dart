@@ -10,12 +10,16 @@ class IntoleranciasScreen extends StatefulWidget {
 class _IntoleranciasScreenState extends State<IntoleranciasScreen> {
   final User? user = FirebaseAuth.instance.currentUser;
 
-  Future<void> _removeIntolerancia(String docId) async {
+  Future<void> _removeIntolerancia(String intolerancia) async {
     if (user != null) {
-      await FirebaseFirestore.instance
-          .collection('intolerancias')
-          .doc(docId)
-          .delete();
+      DocumentReference docRef =
+          FirebaseFirestore.instance.collection('intolerancias').doc(user!.uid);
+      DocumentSnapshot docSnap = await docRef.get();
+      if (docSnap.exists) {
+        List<dynamic> intolerancias = docSnap['nombres'] ?? [];
+        intolerancias.remove(intolerancia);
+        await docRef.update({'nombres': intolerancias});
+      }
     }
   }
 
@@ -30,28 +34,27 @@ class _IntoleranciasScreenState extends State<IntoleranciasScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("Intolerancias")),
-      body: StreamBuilder<QuerySnapshot>(
+      body: StreamBuilder<DocumentSnapshot>(
         stream: FirebaseFirestore.instance
             .collection('intolerancias')
-            .where('userId', isEqualTo: user?.uid)
+            .doc(user?.uid)
             .snapshots(),
         builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return Center(child: CircularProgressIndicator());
+          if (!snapshot.hasData || !snapshot.data!.exists) {
+            return Center(child: Text("No hay intolerancias"));
           }
 
-          var intolerancias = snapshot.data?.docs ?? [];
+          List<dynamic> intolerancias = snapshot.data!['nombres'] ?? [];
 
           return ListView.builder(
             itemCount: intolerancias.length,
             itemBuilder: (context, index) {
-              var doc = intolerancias[index];
-              String intolerancia = doc['nombre'];
+              String intolerancia = intolerancias[index];
               return ListTile(
                 title: Text(intolerancia),
                 trailing: IconButton(
                   icon: Icon(Icons.delete, color: Colors.red),
-                  onPressed: () => _removeIntolerancia(doc.id),
+                  onPressed: () => _removeIntolerancia(intolerancia),
                 ),
               );
             },
@@ -77,10 +80,19 @@ class _AddIntoleranciaScreenState extends State<AddIntoleranciaScreen> {
 
   Future<void> _addIntolerancia() async {
     if (user != null && _controller.text.isNotEmpty) {
-      await FirebaseFirestore.instance.collection('intolerancias').add({
-        'nombre': _controller.text,
-        'userId': user!.uid,
-      });
+      DocumentReference docRef =
+          FirebaseFirestore.instance.collection('intolerancias').doc(user!.uid);
+      DocumentSnapshot docSnap = await docRef.get();
+      if (docSnap.exists) {
+        List<dynamic> intolerancias = docSnap['nombres'] ?? [];
+        intolerancias.add(_controller.text);
+        await docRef.update({'nombres': intolerancias});
+      } else {
+        await docRef.set({
+          'userId': user!.uid,
+          'nombres': [_controller.text],
+        });
+      }
       Navigator.pop(context);
     }
   }
@@ -93,7 +105,7 @@ class _AddIntoleranciaScreenState extends State<AddIntoleranciaScreen> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            TextField(
+            TextFormField(
               controller: _controller,
               decoration: InputDecoration(
                 labelText: "Nueva intolerancia",
