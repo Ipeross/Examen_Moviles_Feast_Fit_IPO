@@ -1,5 +1,6 @@
 import 'package:feast_fit/screens/admin/chart_screen_admin.dart';
 import 'package:feast_fit/screens/admin/food_screen_admin.dart';
+import 'package:feast_fit/screens/intolerancias_screen.dart';
 import 'package:feast_fit/screens/screens.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:feast_fit/widgets/widgets.dart';
@@ -47,7 +48,7 @@ class MainScreen extends StatelessWidget {
           bool isAdmin = snapshot.data ?? false;
 
           return DefaultTabController(
-            length: isAdmin ? 2 : 3,
+            length: isAdmin ? 2 : 4,
             child: Scaffold(
               body: BackgroundContainer(
                 child: TabBarView(
@@ -60,6 +61,7 @@ class MainScreen extends StatelessWidget {
                           const HomeScreen(),
                           const FoodScreen(),
                           ChartScreen(),
+                          IntoleranciasScreen()
                         ],
                 ),
               ),
@@ -73,6 +75,9 @@ class MainScreen extends StatelessWidget {
                         const Tab(icon: Icon(Icons.home), text: 'Inicio'),
                         const Tab(icon: Icon(Icons.fastfood), text: 'Dieta'),
                         const Tab(icon: Icon(Icons.bar_chart), text: 'Gráfico'),
+                        const Tab(
+                            icon: Icon(Icons.favorite_border),
+                            text: 'Intolerancias')
                       ],
                 labelColor: Colors.blue,
                 unselectedLabelColor: Colors.grey,
